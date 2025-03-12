@@ -1,0 +1,14 @@
+C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.DataAccess\bin\Debug\net8.0\VotingSystem.DataAccess.deps.json
+C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.DataAccess\bin\Debug\net8.0\VotingSystem.DataAccess.runtimeconfig.json
+C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.DataAccess\bin\Debug\net8.0\VotingSystem.DataAccess.dll
+C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.DataAccess\bin\Debug\net8.0\VotingSystem.DataAccess.pdb
+C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.DataAccess\obj\Debug\net8.0\VotingSystem.DataAccess.csproj.AssemblyReference.cache
+C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.DataAccess\obj\Debug\net8.0\VotingSystem.DataAccess.GeneratedMSBuildEditorConfig.editorconfig
+C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.DataAccess\obj\Debug\net8.0\VotingSystem.DataAccess.AssemblyInfoInputs.cache
+C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.DataAccess\obj\Debug\net8.0\VotingSystem.DataAccess.AssemblyInfo.cs
+C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.DataAccess\obj\Debug\net8.0\VotingSystem.DataAccess.csproj.CoreCompileInputs.cache
+C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.DataAccess\obj\Debug\net8.0\VotingSystem.DataAccess.dll
+C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.DataAccess\obj\Debug\net8.0\refint\VotingSystem.DataAccess.dll
+C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.DataAccess\obj\Debug\net8.0\VotingSystem.DataAccess.pdb
+C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.DataAccess\obj\Debug\net8.0\VotingSystem.DataAccess.genruntimeconfig.cache
+C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.DataAccess\obj\Debug\net8.0\ref\VotingSystem.DataAccess.dll

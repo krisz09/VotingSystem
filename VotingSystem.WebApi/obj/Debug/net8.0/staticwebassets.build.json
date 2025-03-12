@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "Ywz/OU1f+caccnes7GzlxT35OVLMV7FGCovUwNxgxaY=",
+  "Source": "VotingSystem.WebApi",
+  "BasePath": "_content/VotingSystem.WebApi",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
