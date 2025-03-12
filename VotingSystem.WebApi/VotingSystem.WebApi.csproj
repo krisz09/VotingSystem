@@ -4,6 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>db4703ec-3aa1-4e57-af59-163857de054c</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VotingSystem.DataAccess\VotingSystem.DataAccess.csproj" />
+    <ProjectReference Include="..\VotingSystem.Shared\VotingSystem.Shared.csproj" />
   </ItemGroup>
 
 </Project>

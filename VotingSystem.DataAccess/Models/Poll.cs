@@ -23,7 +23,7 @@ namespace VotingSystem.DataAccess {
         [Required]
         public DateTime EndDate { get; set; }
         [ForeignKey("User")]
-        public int CreatedByUserId { get; set; }
+        public string CreatedByUserId { get; set; }
         public virtual User CreatedByUser { get; set; } = null!;
         public virtual ICollection<PollOption> PollOptions { get; set; } = new List<PollOption>();
         

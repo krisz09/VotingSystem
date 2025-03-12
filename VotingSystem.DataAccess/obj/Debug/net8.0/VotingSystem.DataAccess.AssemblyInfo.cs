@@ -11,10 +11,11 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("6105cd64-4531-4c15-a47c-d27636f205e2")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("VotingSystem.DataAccess")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7d2c587a63ced0dc835dce7b0781810ffe469f55")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a246a0a700d9269164565afe5f0103361514c745")]
 [assembly: System.Reflection.AssemblyProductAttribute("VotingSystem.DataAccess")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VotingSystem.DataAccess")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

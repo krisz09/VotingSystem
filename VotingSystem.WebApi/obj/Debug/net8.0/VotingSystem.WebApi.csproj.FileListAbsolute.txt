@@ -10,6 +10,8 @@ C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\b
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\bin\Debug\net8.0\Azure.Identity.dll
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\bin\Debug\net8.0\Castle.Core.dll
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\bin\Debug\net8.0\Humanizer.dll
+C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\bin\Debug\net8.0\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\bin\Debug\net8.0\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\bin\Debug\net8.0\Microsoft.CodeAnalysis.dll
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\bin\Debug\net8.0\Microsoft.CodeAnalysis.CSharp.dll
@@ -117,7 +119,9 @@ C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\b
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\bin\Debug\net8.0\VotingSystem.DataAccess.dll
+C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\bin\Debug\net8.0\VotingSystem.Shared.dll
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\bin\Debug\net8.0\VotingSystem.DataAccess.pdb
+C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\bin\Debug\net8.0\VotingSystem.Shared.pdb
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\VotingSystem.WebApi.csproj.AssemblyReference.cache
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\VotingSystem.WebApi.GeneratedMSBuildEditorConfig.editorconfig
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\VotingSystem.WebApi.AssemblyInfoInputs.cache
@@ -125,6 +129,7 @@ C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\o
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\VotingSystem.WebApi.csproj.CoreCompileInputs.cache
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\VotingSystem.WebApi.MvcApplicationPartsAssemblyInfo.cs
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\VotingSystem.WebApi.MvcApplicationPartsAssemblyInfo.cache
+C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\VotingSystem.WebApi.sourcelink.json
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\scopedcss\bundle\VotingSystem.WebApi.styles.css
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\staticwebassets.build.json
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\staticwebassets.development.json
@@ -141,3 +146,4 @@ C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\o
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\VotingSystem.WebApi.pdb
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\VotingSystem.WebApi.genruntimeconfig.cache
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\ref\VotingSystem.WebApi.dll
+C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

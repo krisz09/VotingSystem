@@ -7,6 +7,7 @@ C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.DataAcce
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.DataAccess\obj\Debug\net8.0\VotingSystem.DataAccess.AssemblyInfoInputs.cache
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.DataAccess\obj\Debug\net8.0\VotingSystem.DataAccess.AssemblyInfo.cs
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.DataAccess\obj\Debug\net8.0\VotingSystem.DataAccess.csproj.CoreCompileInputs.cache
+C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.DataAccess\obj\Debug\net8.0\VotingSystem.DataAccess.sourcelink.json
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.DataAccess\obj\Debug\net8.0\VotingSystem.DataAccess.dll
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.DataAccess\obj\Debug\net8.0\refint\VotingSystem.DataAccess.dll
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.DataAccess\obj\Debug\net8.0\VotingSystem.DataAccess.pdb
