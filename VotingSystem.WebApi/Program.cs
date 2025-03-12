@@ -1,4 +1,9 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using VotingSystem.DataAccess;
+using VotingSystem.DataAccess.Extensions;
 
 namespace VotingSystem.WebApi
 {
@@ -12,7 +17,8 @@ namespace VotingSystem.WebApi
 
             builder.Services.AddControllers();
             builder.Services.AddDataAccess(builder.Configuration);
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.ConfigureDatabaseAndIdentity(builder.Configuration);
+            builder.Services.ConfigureJwtAuthentication(builder.Configuration);
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 

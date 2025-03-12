@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace VotingSystem.DataAccess {
 
-    public class VotingSystemDbContext : DbContext 
+    public class VotingSystemDbContext : IdentityDbContext<User>
     {
         public VotingSystemDbContext(DbContextOptions<VotingSystemDbContext> options) : base(options) { }
 
