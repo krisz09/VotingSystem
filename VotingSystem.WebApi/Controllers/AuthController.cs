@@ -91,10 +91,5 @@ namespace VotingSystem.WebApi.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
-        public IActionResult Index()
-        {
-            return View();
-        }
     }
 }

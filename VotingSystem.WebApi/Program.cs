@@ -21,6 +21,7 @@ namespace VotingSystem.WebApi
             builder.Services.ConfigureJwtAuthentication(builder.Configuration);
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
             var app = builder.Build();
 

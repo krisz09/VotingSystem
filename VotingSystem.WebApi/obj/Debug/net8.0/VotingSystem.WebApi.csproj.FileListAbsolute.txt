@@ -147,3 +147,4 @@ C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\o
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\VotingSystem.WebApi.genruntimeconfig.cache
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\ref\VotingSystem.WebApi.dll
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\bin\Debug\net8.0\AutoMapper.dll
