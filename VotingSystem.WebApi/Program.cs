@@ -25,6 +25,12 @@ namespace VotingSystem.WebApi
 
             var app = builder.Build();
 
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<VotingSystemDbContext>();
+                dbContext.Seed();
+            }
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

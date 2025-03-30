@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using VotingSystem.DataAccess.Services;
 
 namespace VotingSystem.DataAccess.Extensions
 {
@@ -22,6 +23,8 @@ namespace VotingSystem.DataAccess.Extensions
                 .UseSqlServer(connectionString)
                 .UseLazyLoadingProxies()
             );
+
+            services.AddScoped<IPollsService, PollsService>();
          
             return services;
         }
