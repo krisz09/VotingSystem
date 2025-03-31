@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VotingSystem.DataAccess", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VotingSystem.Shared", "VotingSystem.Shared\VotingSystem.Shared.csproj", "{1C381B91-94B0-4912-B81D-E3F7D3A280A5}"
 EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "votingsystemreact", "VotingSystemReact\votingsystemreact.esproj", "{1037897C-C43E-453B-BBF7-7820B51F452C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,12 @@ Global
 		{1C381B91-94B0-4912-B81D-E3F7D3A280A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1C381B91-94B0-4912-B81D-E3F7D3A280A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C381B91-94B0-4912-B81D-E3F7D3A280A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1037897C-C43E-453B-BBF7-7820B51F452C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1037897C-C43E-453B-BBF7-7820B51F452C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1037897C-C43E-453B-BBF7-7820B51F452C}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{1037897C-C43E-453B-BBF7-7820B51F452C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1037897C-C43E-453B-BBF7-7820B51F452C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1037897C-C43E-453B-BBF7-7820B51F452C}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
