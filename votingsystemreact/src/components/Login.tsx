@@ -1,80 +1,43 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { Container, TextField, Button, Typography, Box, Paper, CssBaseline } from '@mui/material';
-import { LockOutlined as LockOutlinedIcon } from '@mui/icons-material';
-import Avatar from '@mui/material/Avatar';
+﻿import React, { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { login as loginApi } from "../api/api"; // ⬅️ fontos: átneveztük, hogy ne ütközzön a useAuth login-nel
 
-const Login = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const navigate = useNavigate();
+const LoginForm: React.FC = () => {
+    const { login } = useAuth();
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError("");
+
         try {
-            const response = await axios.post('/api/auth/login', { email, password });
-            console.log(response.data);
-            navigate('/');
-        } catch (error) {
-            console.error('Login failed', error);
+            const token = await loginApi(email, password); // ⬅️ itt hívjuk az api.ts-ben lévőt
+            login(token); // ⬅️ itt hívjuk az AuthContext-es login-t
+        } catch (err) {
+            setError("Hibás email vagy jelszó.");
         }
     };
 
     return (
-        <Container component="main" maxWidth="xs" sx={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#fff' }}>
-            <CssBaseline />
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                <Paper elevation={3} sx={{ padding: 4, width: '100%' }}>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                            <LockOutlinedIcon />
-                        </Avatar>
-                        <Typography component="h1" variant="h5">
-                            Login
-                        </Typography>
-                        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="email"
-                                label="Email Address"
-                                name="email"
-                                autoComplete="email"
-                                autoFocus
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                name="password"
-                                label="Password"
-                                type="password"
-                                id="password"
-                                autoComplete="current-password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                sx={{ mt: 3, mb: 2 }}
-                            >
-                                Login
-                            </Button>
-                        </Box>
-                    </Box>
-                </Paper>
-            </Box>
-        </Container>
+        <div style={{ marginTop: "20px" }}>
+            <h2>Bejelentkezés</h2>
+            <form onSubmit={handleSubmit}>
+                <div>
+                    <label>Email:</label><br />
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                </div>
+                <div>
+                    <label>Jelszó:</label><br />
+                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                </div>
+                <button type="submit">Bejelentkezés</button>
+                {error && <p style={{ color: "red" }}>{error}</p>}
+            </form>
+        </div>
     );
 };
 
-export default Login;
-
-
-
+export default LoginForm;

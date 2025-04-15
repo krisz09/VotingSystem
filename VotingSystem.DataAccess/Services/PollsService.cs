@@ -16,11 +16,18 @@ namespace VotingSystem.DataAccess.Services
             _context = context;
         }
 
+        public async Task<IReadOnlyCollection<Poll>> GetAllPollsAsync()
+        {
+            return await _context.Polls
+                .Include(p => p.PollOptions)
+                .ToListAsync();
+        }
+
         public async Task<IReadOnlyCollection<Poll>> GetActivePollsAsync()
         {
             return await _context.Polls
                 .Include(p => p.PollOptions)
-                .Where(p => p.StartDate <= DateTime.UtcNow && p.EndDate >= DateTime.UtcNow)
+                .Where(p => p.StartDate <= DateTime.Now && p.EndDate >= DateTime.Now)
                 .ToListAsync();
         }
 
@@ -47,6 +54,8 @@ namespace VotingSystem.DataAccess.Services
 
             return true;
         }
+
+
     }
 
 

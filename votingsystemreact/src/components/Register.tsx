@@ -1,29 +1,39 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+﻿import React, { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { register as registerApi } from "../api/api"; // ⬅️ átnevezzük az ütközés elkerülésére
 
-const Register = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const navigate = useNavigate();
+const RegisterForm: React.FC = () => {
+    const { login } = useAuth();
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const [success, setSuccess] = useState(false);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError("");
+        setSuccess(false);
+
         try {
-            const response = await axios.post('/api/auth/register', { email, password });
-            console.log(response.data);
-            navigate('/login');
-        } catch (error) {
-            console.error('Registration failed', error);
+            const token = await registerApi(email, password); // ⬅️ az új api.ts-beli függvényt hívjuk
+            login(token);
+            setSuccess(true);
+        } catch (err: any) {
+            if (err.response?.status === 400) {
+                setError("A felhasználó már létezik, vagy a jelszó túl gyenge.");
+            } else {
+                setError("Hiba történt regisztráció közben.");
+            }
         }
     };
 
     return (
-        <div style={{ textAlign: 'center', marginTop: '50px' }}>
-            <h1>Register</h1>
-            <form onSubmit={handleSubmit} style={{ display: 'inline-block', textAlign: 'left' }}>
+        <div style={{ marginTop: "20px" }}>
+            <h2>Regisztráció</h2>
+            <form onSubmit={handleSubmit}>
                 <div>
-                    <label>Email:</label>
+                    <label>Email:</label><br />
                     <input
                         type="email"
                         value={email}
@@ -32,7 +42,7 @@ const Register = () => {
                     />
                 </div>
                 <div>
-                    <label>Password:</label>
+                    <label>Jelszó:</label><br />
                     <input
                         type="password"
                         value={password}
@@ -40,11 +50,14 @@ const Register = () => {
                         required
                     />
                 </div>
-                <button type="submit">Register</button>
+                <button type="submit">Regisztráció</button>
+                {success && (
+                    <p style={{ color: "green" }}>Sikeres regisztráció! Be vagy jelentkezve.</p>
+                )}
+                {error && <p style={{ color: "red" }}>{error}</p>}
             </form>
         </div>
     );
 };
 
-export default Register;
-
+export default RegisterForm;

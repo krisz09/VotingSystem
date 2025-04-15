@@ -16,6 +16,16 @@ namespace VotingSystem.WebApi
 
             // Add services to the container.
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowReactApp", policy =>
+                {
+                    policy.WithOrigins("http://localhost:63670") // vagy 3000 vagy 63670 (React portod!)
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();
+                });
+            });
             builder.Services.AddControllers();
             builder.Services.AddDataAccess(builder.Configuration);
             builder.Services.ConfigureDatabaseAndIdentity(builder.Configuration);
@@ -26,16 +36,10 @@ namespace VotingSystem.WebApi
 
             var app = builder.Build();
 
-            using (var scope = app.Services.CreateScope())
-            {
-                Console.WriteLine("Seeding...");
-                var context = scope.ServiceProvider.GetRequiredService<VotingSystemDbContext>();
-                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+            
 
-                await context.Database.MigrateAsync(); // vagy EnsureCreatedAsync()
+            app.UseCors("AllowReactApp");
 
-                await context.SeedAsync(userManager);
-            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

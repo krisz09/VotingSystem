@@ -10,5 +10,6 @@ namespace VotingSystem.DataAccess.Services
     {
         public Task<IReadOnlyCollection<Poll>> GetActivePollsAsync();
         public Task<bool> SubmitVoteAsync(int pollOptionId, string userId);
+        public Task<IReadOnlyCollection<Poll>> GetAllPollsAsync();
     }
 }
