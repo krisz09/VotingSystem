@@ -14,5 +14,7 @@ namespace VotingSystem.Shared.Models
         public DateTime EndDate { get; set; }
         public string CreatedByUserId { get; set; } = null!;
         public List<PollOptionDto> PollOptions { get; set; } = new List<PollOptionDto>();
+
+        public bool HasVoted { get; set; }
     }
 }

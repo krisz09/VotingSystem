@@ -58,11 +58,16 @@ namespace VotingSystem.DataAccess.Extensions
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false, // Set to true if you have a specific issuer
-                    ValidateAudience = false, // Set to true if you have a specific audience
+                    ValidateIssuer = true,
+                    ValidIssuer = configuration["Jwt:Issuer"],
+
+                    ValidateAudience = true,
+                    ValidAudience = configuration["Jwt:Audience"],
+
                     RequireExpirationTime = true,
                     ValidateLifetime = true
                 };
+
             });
         }
     }

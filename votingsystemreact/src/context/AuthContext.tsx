@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext, ReactNode } from "react";
-import jwt_decode from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 interface AuthContextType {
     isLoggedIn: boolean;
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const savedToken = localStorage.getItem("token");
         if (savedToken) {
             try {
-                const decoded = jwt_decode<JwtPayload>(savedToken);
+                const decoded = jwtDecode<JwtPayload>(savedToken);
                 setToken(savedToken);
                 setUserId(decoded.sub);
                 setIsLoggedIn(true);
@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const login = (newToken: string) => {
         try {
-            const decoded = jwt_decode<JwtPayload>(newToken);
+            const decoded = jwtDecode<JwtPayload>(newToken);
             localStorage.setItem("token", newToken);
             setToken(newToken);
             setUserId(decoded.sub);

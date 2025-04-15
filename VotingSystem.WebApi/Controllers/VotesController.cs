@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using VotingSystem.DataAccess;
 using VotingSystem.DataAccess.Services;
 using VotingSystem.Shared.Models;
@@ -21,13 +24,26 @@ namespace VotingSystem.WebApi.Controllers
             _context = context;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetActivePolls()
         {
-            var activePolls = await _pollsService.GetActivePollsAsync();
+            var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub); // vagy ClaimTypes.NameIdentifier
+            if (userId == null) return Unauthorized();
+
+            var activePolls = await _pollsService.GetActivePollsWithVotesAsync(userId);
             var pollsDto = _mapper.Map<List<PollResponseDto>>(activePolls);
+
+            // állítsuk be a HasVoted mezőt DTO-n belül is
+            var votedPollIds = await _pollsService.GetVotedPollIdsForUserAsync(userId);
+            foreach (var dto in pollsDto)
+            {
+                dto.HasVoted = votedPollIds.Contains(dto.Id);
+            }
+
             return Ok(pollsDto);
         }
+
 
         [HttpPost("submit-vote")]
         public async Task<IActionResult> SubmitVote([FromBody] SubmitVoteRequestDto request)

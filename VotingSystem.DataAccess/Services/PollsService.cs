@@ -23,13 +23,32 @@ namespace VotingSystem.DataAccess.Services
                 .ToListAsync();
         }
 
-        public async Task<IReadOnlyCollection<Poll>> GetActivePollsAsync()
+        public async Task<IReadOnlyCollection<Poll>> GetActivePollsWithVotesAsync(string userId)
         {
-            return await _context.Polls
+            var polls = await _context.Polls
                 .Include(p => p.PollOptions)
-                .Where(p => p.StartDate <= DateTime.Now && p.EndDate >= DateTime.Now)
+                .Where(p => p.StartDate <= DateTime.UtcNow && p.EndDate >= DateTime.UtcNow)
+                .ToListAsync();
+
+            var votedPollIds = await _context.Votes
+                .Where(v => v.UserId == userId)
+                .Select(v => v.PollOption.PollId)
+                .Distinct()
+                .ToListAsync();
+
+            return polls;
+        }
+
+        public async Task<List<int>> GetVotedPollIdsForUserAsync(string userId)
+        {
+            return await _context.Votes
+                .Where(v => v.UserId == userId)
+                .Select(v => v.PollOption.PollId)
+                .Distinct()
                 .ToListAsync();
         }
+
+
 
         public async Task<bool> SubmitVoteAsync(int pollOptionId, string userId)
         {

@@ -11,8 +11,8 @@ export interface PollResponseDto {
     startDate: string;
     endDate: string;
     createdByUserId: string;
-    hasVoted: boolean;
     pollOptions: PollOptionDto[];
+    hasVoted: boolean;
 }
 
 export interface SubmitVoteRequestDto {
@@ -21,12 +21,16 @@ export interface SubmitVoteRequestDto {
 }
 
 
-const API_URL = "https://localhost:7294/api/votes";
 
-export async function getActivePolls(): Promise<PollResponseDto[]> {
-    const response = await axios.get(API_URL);
-    return response.data;
+export async function getActivePolls(token: string): Promise<PollResponseDto[]> {
+  const response = await axios.get("https://localhost:7294/api/votes", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
 }
+
 
 // api.ts
 
