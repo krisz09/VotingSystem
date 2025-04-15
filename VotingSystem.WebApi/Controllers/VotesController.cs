@@ -5,7 +5,7 @@ using VotingSystem.Shared.Models;
 
 namespace VotingSystem.WebApi.Controllers
 {
-    [Route("api/auth")]
+    [Route("api/votes")]
     [ApiController]
     public class VotesController : Controller
     {

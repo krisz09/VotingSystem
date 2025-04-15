@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace VotingSystem.DataAccess {
+namespace VotingSystem.DataAccess
+{
 
     public class VotingSystemDbContext : IdentityDbContext<User>
     {
@@ -37,48 +39,75 @@ namespace VotingSystem.DataAccess {
                 .OnDelete(DeleteBehavior.Restrict);
         }
 
-        public void Seed()
+        public async Task SeedAsync(UserManager<User> userManager)
         {
-            if (!Users.Any(u => u.Id == "1"))
+            var existingUser = await userManager.FindByIdAsync("1");
+            if (existingUser == null)
             {
-                Users.Add(new User { Id = "1", UserName = "admin" });
-                SaveChanges();
+                var user = new User
+                {
+                    Id = "1",
+                    UserName = "admin",
+                    Email = "admin@example.com"
+                };
+
+                var result = await userManager.CreateAsync(user, "Admin123!"); // adsz jelszót is
+
+                if (!result.Succeeded)
+                {
+                    Console.WriteLine("User creation failed:");
+                    foreach (var error in result.Errors)
+                    {
+                        Console.WriteLine($"- {error.Description}");
+                    }
+
+                    return;
+                }
             }
 
             if (!Polls.Any())
             {
                 var polls = new List<Poll>
+        {
+            new Poll
+            {
+                Question = "What is your favorite color?",
+                StartDate = DateTime.UtcNow.AddDays(-1),
+                EndDate = DateTime.UtcNow.AddDays(10),
+                CreatedByUserId = "1",
+                PollOptions = new List<PollOption>
                 {
-                    new Poll
-                    {
-                        Question = "What is your favorite color?",
-                        StartDate = DateTime.Now.AddDays(-1),
-                        EndDate = DateTime.Now.AddDays(10),
-                        CreatedByUserId = "1",
-                        PollOptions = new List<PollOption>
-                        {
-                            new PollOption { OptionText = "Red" },
-                            new PollOption { OptionText = "Blue" },
-                            new PollOption { OptionText = "Green" }
-                        }
-                    },
-                    new Poll
-                    {
-                        Question = "What is your favorite programming language?",
-                        StartDate = DateTime.Now.AddDays(-1),
-                        EndDate = DateTime.Now.AddDays(10),
-                        CreatedByUserId = "1",
-                        PollOptions = new List<PollOption>
-                        {
-                            new PollOption { OptionText = "C#" },
-                            new PollOption { OptionText = "Java" },
-                            new PollOption { OptionText = "Python" }
-                        }
-                    }
-                };
+                    new PollOption { OptionText = "Red" },
+                    new PollOption { OptionText = "Blue" },
+                    new PollOption { OptionText = "Green" }
+                }
+            },
+            new Poll
+            {
+                Question = "What is your favorite programming language?",
+                StartDate = DateTime.UtcNow.AddDays(-1),
+                EndDate = DateTime.UtcNow.AddDays(10),
+                CreatedByUserId = "1",
+                PollOptions = new List<PollOption>
+                {
+                    new PollOption { OptionText = "C#" },
+                    new PollOption { OptionText = "Java" },
+                    new PollOption { OptionText = "Python" }
+                }
+            }
+        };
 
                 Polls.AddRange(polls);
                 SaveChanges();
+
+                var pollCount = Polls.Count();
+                Console.WriteLine($"Poll count after save: {pollCount}");
+
+                foreach (var poll in Polls.Include(p => p.PollOptions))
+                {
+                    Console.WriteLine($"Poll: {poll.Question}, Start: {poll.StartDate}, End: {poll.EndDate}, Options: {poll.PollOptions.Count}");
+                }
+
             }
         }
     }

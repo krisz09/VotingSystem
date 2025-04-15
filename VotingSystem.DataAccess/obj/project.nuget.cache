@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "VDK9PZREBX8=",
+  "dgSpecHash": "nUpZykjldIk=",
   "success": true,
-  "projectFilePath": "C:\\Egyetem\\4.félév\\C# .NET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\VotingSystem.DataAccess.csproj",
+  "projectFilePath": "C:\\Egyetem\\4.félév\\CNET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\VotingSystem.DataAccess.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\antal\\.nuget\\packages\\azure.core\\1.25.0\\azure.core.1.25.0.nupkg.sha512",
     "C:\\Users\\antal\\.nuget\\packages\\azure.identity\\1.7.0\\azure.identity.1.7.0.nupkg.sha512",

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using VotingSystem.DataAccess;
@@ -9,7 +10,7 @@ namespace VotingSystem.WebApi
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -27,8 +28,13 @@ namespace VotingSystem.WebApi
 
             using (var scope = app.Services.CreateScope())
             {
-                var dbContext = scope.ServiceProvider.GetRequiredService<VotingSystemDbContext>();
-                dbContext.Seed();
+                Console.WriteLine("Seeding...");
+                var context = scope.ServiceProvider.GetRequiredService<VotingSystemDbContext>();
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+
+                await context.Database.MigrateAsync(); // vagy EnsureCreatedAsync()
+
+                await context.SeedAsync(userManager);
             }
 
             // Configure the HTTP request pipeline.

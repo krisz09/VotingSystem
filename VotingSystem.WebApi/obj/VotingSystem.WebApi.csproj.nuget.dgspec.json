@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Egyetem\\4.félév\\C# .NET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.WebApi\\VotingSystem.WebApi.csproj": {}
+    "C:\\Egyetem\\4.félév\\CNET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.WebApi\\VotingSystem.WebApi.csproj": {}
   },
   "projects": {
-    "C:\\Egyetem\\4.félév\\C# .NET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\VotingSystem.DataAccess.csproj": {
+    "C:\\Egyetem\\4.félév\\CNET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\VotingSystem.DataAccess.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Egyetem\\4.félév\\C# .NET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\VotingSystem.DataAccess.csproj",
+        "projectUniqueName": "C:\\Egyetem\\4.félév\\CNET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\VotingSystem.DataAccess.csproj",
         "projectName": "VotingSystem.DataAccess",
-        "projectPath": "C:\\Egyetem\\4.félév\\C# .NET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\VotingSystem.DataAccess.csproj",
+        "projectPath": "C:\\Egyetem\\4.félév\\CNET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\VotingSystem.DataAccess.csproj",
         "packagesPath": "C:\\Users\\antal\\.nuget\\packages\\",
-        "outputPath": "C:\\Egyetem\\4.félév\\C# .NET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\obj\\",
+        "outputPath": "C:\\Egyetem\\4.félév\\CNET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -106,14 +106,14 @@
         }
       }
     },
-    "C:\\Egyetem\\4.félév\\C# .NET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.Shared\\VotingSystem.Shared.csproj": {
+    "C:\\Egyetem\\4.félév\\CNET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.Shared\\VotingSystem.Shared.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Egyetem\\4.félév\\C# .NET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.Shared\\VotingSystem.Shared.csproj",
+        "projectUniqueName": "C:\\Egyetem\\4.félév\\CNET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.Shared\\VotingSystem.Shared.csproj",
         "projectName": "VotingSystem.Shared",
-        "projectPath": "C:\\Egyetem\\4.félév\\C# .NET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.Shared\\VotingSystem.Shared.csproj",
+        "projectPath": "C:\\Egyetem\\4.félév\\CNET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.Shared\\VotingSystem.Shared.csproj",
         "packagesPath": "C:\\Users\\antal\\.nuget\\packages\\",
-        "outputPath": "C:\\Egyetem\\4.félév\\C# .NET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.Shared\\obj\\",
+        "outputPath": "C:\\Egyetem\\4.félév\\CNET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.Shared\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -135,8 +135,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Egyetem\\4.félév\\C# .NET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\VotingSystem.DataAccess.csproj": {
-                "projectPath": "C:\\Egyetem\\4.félév\\C# .NET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\VotingSystem.DataAccess.csproj"
+              "C:\\Egyetem\\4.félév\\CNET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\VotingSystem.DataAccess.csproj": {
+                "projectPath": "C:\\Egyetem\\4.félév\\CNET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\VotingSystem.DataAccess.csproj"
               }
             }
           }
@@ -176,14 +176,14 @@
         }
       }
     },
-    "C:\\Egyetem\\4.félév\\C# .NET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.WebApi\\VotingSystem.WebApi.csproj": {
+    "C:\\Egyetem\\4.félév\\CNET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.WebApi\\VotingSystem.WebApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Egyetem\\4.félév\\C# .NET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.WebApi\\VotingSystem.WebApi.csproj",
+        "projectUniqueName": "C:\\Egyetem\\4.félév\\CNET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.WebApi\\VotingSystem.WebApi.csproj",
         "projectName": "VotingSystem.WebApi",
-        "projectPath": "C:\\Egyetem\\4.félév\\C# .NET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.WebApi\\VotingSystem.WebApi.csproj",
+        "projectPath": "C:\\Egyetem\\4.félév\\CNET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.WebApi\\VotingSystem.WebApi.csproj",
         "packagesPath": "C:\\Users\\antal\\.nuget\\packages\\",
-        "outputPath": "C:\\Egyetem\\4.félév\\C# .NET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.WebApi\\obj\\",
+        "outputPath": "C:\\Egyetem\\4.félév\\CNET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.WebApi\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -205,11 +205,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Egyetem\\4.félév\\C# .NET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\VotingSystem.DataAccess.csproj": {
-                "projectPath": "C:\\Egyetem\\4.félév\\C# .NET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\VotingSystem.DataAccess.csproj"
+              "C:\\Egyetem\\4.félév\\CNET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\VotingSystem.DataAccess.csproj": {
+                "projectPath": "C:\\Egyetem\\4.félév\\CNET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\VotingSystem.DataAccess.csproj"
               },
-              "C:\\Egyetem\\4.félév\\C# .NET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.Shared\\VotingSystem.Shared.csproj": {
-                "projectPath": "C:\\Egyetem\\4.félév\\C# .NET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.Shared\\VotingSystem.Shared.csproj"
+              "C:\\Egyetem\\4.félév\\CNET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.Shared\\VotingSystem.Shared.csproj": {
+                "projectPath": "C:\\Egyetem\\4.félév\\CNET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.Shared\\VotingSystem.Shared.csproj"
               }
             }
           }

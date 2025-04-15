@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Egyetem\\4.félév\\C# .NET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\VotingSystem.DataAccess.csproj": {}
+    "C:\\Egyetem\\4.félév\\CNET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\VotingSystem.DataAccess.csproj": {}
   },
   "projects": {
-    "C:\\Egyetem\\4.félév\\C# .NET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\VotingSystem.DataAccess.csproj": {
+    "C:\\Egyetem\\4.félév\\CNET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\VotingSystem.DataAccess.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Egyetem\\4.félév\\C# .NET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\VotingSystem.DataAccess.csproj",
+        "projectUniqueName": "C:\\Egyetem\\4.félév\\CNET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\VotingSystem.DataAccess.csproj",
         "projectName": "VotingSystem.DataAccess",
-        "projectPath": "C:\\Egyetem\\4.félév\\C# .NET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\VotingSystem.DataAccess.csproj",
+        "projectPath": "C:\\Egyetem\\4.félév\\CNET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\VotingSystem.DataAccess.csproj",
         "packagesPath": "C:\\Users\\antal\\.nuget\\packages\\",
-        "outputPath": "C:\\Egyetem\\4.félév\\C# .NET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\obj\\",
+        "outputPath": "C:\\Egyetem\\4.félév\\CNET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.DataAccess\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

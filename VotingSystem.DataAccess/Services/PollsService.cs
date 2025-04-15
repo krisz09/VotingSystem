@@ -19,7 +19,8 @@ namespace VotingSystem.DataAccess.Services
         public async Task<IReadOnlyCollection<Poll>> GetActivePollsAsync()
         {
             return await _context.Polls
-                .Where(p => p.StartDate <= DateTime.Now && p.EndDate >= DateTime.Now)
+                .Include(p => p.PollOptions)
+                .Where(p => p.StartDate <= DateTime.UtcNow && p.EndDate >= DateTime.UtcNow)
                 .ToListAsync();
         }
 
