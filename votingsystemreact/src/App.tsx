@@ -5,6 +5,8 @@ import LoginForm from "./components/Login";
 import RegisterForm from "./components/Register";
 import PollDetails from "./components/PollDetails";
 import { PollResponseDto } from "./api/api";
+import Navbar from "./components/Navbar"; // Import Navbar
+import './App.css'; // Import the CSS file
 
 const App: React.FC = () => {
     const { isLoggedIn, logout } = useAuth();
@@ -12,31 +14,36 @@ const App: React.FC = () => {
     const [selectedPoll, setSelectedPoll] = useState<PollResponseDto | null>(null);
 
     return (
-        <div className="App" style={{ padding: "20px" }}>
-            <h1>Szavazó Rendszer</h1>
+        <div className="App">
+            <Navbar /> {/* Include the Navbar here */}
+            <div className="container">
+                <h1>Voting System</h1>
 
-            {!isLoggedIn ? (
-                <>
-                    <div style={{ marginBottom: "10px" }}>
-                        <button onClick={() => setShowRegister(false)} style={{ marginRight: "10px" }}>
-                            Bejelentkezés
+                {!isLoggedIn ? (
+                    <>
+                        <div className="button-group">
+                            <button onClick={() => setShowRegister(false)} className="button">
+                                Login
+                            </button>
+                            <button onClick={() => setShowRegister(true)} className="button">
+                                Register
+                            </button>
+                        </div>
+                        {showRegister ? <RegisterForm /> : <LoginForm />}
+                    </>
+                ) : (
+                    <>
+                        <button onClick={logout} className="logout-button">
+                            Logout
                         </button>
-                        <button onClick={() => setShowRegister(true)}>Regisztráció</button>
-                    </div>
-                    {showRegister ? <RegisterForm /> : <LoginForm />}
-                </>
-            ) : (
-                <>
-                    <button onClick={logout} style={{ marginBottom: "20px" }}>
-                        Kijelentkezés
-                    </button>
-                    {selectedPoll ? (
-                        <PollDetails poll={selectedPoll} onBack={() => setSelectedPoll(null)} />
-                    ) : (
-                        <ActivePollsList onSelectPoll={setSelectedPoll} />
-                    )}
-                </>
-            )}
+                        {selectedPoll ? (
+                            <PollDetails poll={selectedPoll} onBack={() => setSelectedPoll(null)} />
+                        ) : (
+                            <ActivePollsList onSelectPoll={setSelectedPoll} />
+                        )}
+                    </>
+                )}
+            </div>
         </div>
     );
 };

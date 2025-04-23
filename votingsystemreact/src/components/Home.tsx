@@ -15,7 +15,8 @@ const Home = () => {
                 justifyContent: 'center',
                 minHeight: '100vh',
                 maxWidth: '100%',
-                textAlign: 'center' }}>
+                textAlign: 'center'
+            }}>
             <Box sx={{ marginBottom: '20px' }}>
                 <Typography variant="h3" component="h1" gutterBottom>
                     Welcome to the Voting System

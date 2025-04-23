@@ -17,10 +17,10 @@ const PollDetails: React.FC<Props> = ({ poll, onBack }) => {
         if (selectedOptionId !== null && userId) {
             try {
                 await submitVote(selectedOptionId, userId);
-                setMessage("Szavazat sikeresen rögzítve! 🎉");
+                setMessage("Vote successfully recorded! 🎉");
             } catch (error) {
-                console.error("Szavazási hiba:", error);
-                setMessage("Hiba történt a szavazat leadásakor.");
+                console.error("Voting error:", error);
+                setMessage("An error occurred while submitting your vote.");
             }
         }
     };
@@ -45,10 +45,10 @@ const PollDetails: React.FC<Props> = ({ poll, onBack }) => {
                 ))}
             </ul>
             <button onClick={handleVote} disabled={selectedOptionId === null}>
-                Szavazok
+                Vote
             </button>
             <br />
-            <button onClick={onBack}>Vissza</button>
+            <button onClick={onBack}>Back</button>
 
             {message && <p style={{ marginTop: "10px", color: "green" }}>{message}</p>}
         </div>

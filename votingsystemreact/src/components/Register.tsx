@@ -1,6 +1,6 @@
 ﻿import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { register as registerApi } from "../api/api"; // ⬅️ átnevezzük az ütközés elkerülésére
+import { register as registerApi } from "../api/api"; // ⬅️ renaming to avoid conflicts
 
 const RegisterForm: React.FC = () => {
     const { login } = useAuth();
@@ -16,21 +16,21 @@ const RegisterForm: React.FC = () => {
         setSuccess(false);
 
         try {
-            const token = await registerApi(email, password); // ⬅️ az új api.ts-beli függvényt hívjuk
+            const token = await registerApi(email, password); // ⬅️ calling the new function in api.ts
             login(token);
             setSuccess(true);
         } catch (err: any) {
             if (err.response?.status === 400) {
-                setError("A felhasználó már létezik, vagy a jelszó túl gyenge.");
+                setError("The user already exists, or the password is too weak.");
             } else {
-                setError("Hiba történt regisztráció közben.");
+                setError("An error occurred during registration.");
             }
         }
     };
 
     return (
         <div style={{ marginTop: "20px" }}>
-            <h2>Regisztráció</h2>
+            <h2>Registration</h2>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Email:</label><br />
@@ -42,7 +42,7 @@ const RegisterForm: React.FC = () => {
                     />
                 </div>
                 <div>
-                    <label>Jelszó:</label><br />
+                    <label>Password:</label><br />
                     <input
                         type="password"
                         value={password}
@@ -50,9 +50,9 @@ const RegisterForm: React.FC = () => {
                         required
                     />
                 </div>
-                <button type="submit">Regisztráció</button>
+                <button type="submit">Register</button>
                 {success && (
-                    <p style={{ color: "green" }}>Sikeres regisztráció! Be vagy jelentkezve.</p>
+                    <p style={{ color: "green" }}>Registration successful! You are logged in.</p>
                 )}
                 {error && <p style={{ color: "red" }}>{error}</p>}
             </form>

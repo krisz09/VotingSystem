@@ -23,17 +23,17 @@ const LoginForm: React.FC = () => {
 
     return (
         <div style={{ marginTop: "20px" }}>
-            <h2>Bejelentkezés</h2>
+            <h2>Login</h2>
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Email:</label><br />
                     <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
                 </div>
                 <div>
-                    <label>Jelszó:</label><br />
+                    <label>Password:</label><br />
                     <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
                 </div>
-                <button type="submit">Bejelentkezés</button>
+                <button type="submit">Login</button>
                 {error && <p style={{ color: "red" }}>{error}</p>}
             </form>
         </div>

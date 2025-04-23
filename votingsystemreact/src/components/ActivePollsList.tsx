@@ -9,7 +9,7 @@ interface Props {
 const ActivePollsList: React.FC<Props> = ({ onSelectPoll }) => {
     const [polls, setPolls] = useState<PollResponseDto[]>([]);
     const [loading, setLoading] = useState(true);
-    const { token } = useAuth(); // 🔑 Itt kérjük el a token-t
+    const { token } = useAuth(); // 🔑 Getting the token here
 
     useEffect(() => {
         if (!token) return;
@@ -21,18 +21,18 @@ const ActivePollsList: React.FC<Props> = ({ onSelectPoll }) => {
                 setLoading(false);
             })
             .catch(err => {
-                console.error("Hiba az aktív szavazások lekérésekor:", err);
+                console.error("Error fetching active polls:", err);
                 setLoading(false);
             });
     }, [token]);
 
-    if (loading) return <p>Betöltés...</p>;
+    if (loading) return <p>Loading...</p>;
 
     return (
         <div>
-            <h2>Aktív szavazások</h2>
+            <h2>Active Polls</h2>
             {polls.length === 0 ? (
-                <p>Nincs aktív szavazás.</p>
+                <p>No active polls.</p>
             ) : (
                 <ul>
                     {polls.map(poll => (
@@ -42,9 +42,9 @@ const ActivePollsList: React.FC<Props> = ({ onSelectPoll }) => {
                             </button>
                             <div>
                                 {poll.hasVoted ? (
-                                    <span style={{ color: "green" }}>✔ Már szavaztál</span>
+                                    <span style={{ color: "green" }}>✔ You have voted</span>
                                 ) : (
-                                    <span style={{ color: "gray" }}>✖ Még nem szavaztál</span>
+                                    <span style={{ color: "gray" }}>✖ You haven't voted yet</span>
                                 )}
                             </div>
                         </li>
