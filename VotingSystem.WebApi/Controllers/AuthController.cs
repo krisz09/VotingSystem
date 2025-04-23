@@ -89,6 +89,7 @@ namespace VotingSystem.WebApi.Controllers
                 expires: DateTime.Now.AddHours(1),
                 signingCredentials: creds);
 
+
             return new JwtSecurityTokenHandler().WriteToken(token); // ✅ most már string lesz
         }
 

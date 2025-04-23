@@ -28,7 +28,8 @@ namespace VotingSystem.WebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetActivePolls()
         {
-            var userId = User.FindFirstValue(JwtRegisteredClaimNames.Sub); // vagy ClaimTypes.NameIdentifier
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // vagy ClaimTypes.NameIdentifier
+            Console.WriteLine("userId from JWT: " + userId);
             if (userId == null) return Unauthorized();
 
             var activePolls = await _pollsService.GetActivePollsWithVotesAsync(userId);

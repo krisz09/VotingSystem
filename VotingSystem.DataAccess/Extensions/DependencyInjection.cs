@@ -60,13 +60,26 @@ namespace VotingSystem.DataAccess.Extensions
                     IssuerSigningKey = new SymmetricSecurityKey(key),
                     ValidateIssuer = true,
                     ValidIssuer = configuration["Jwt:Issuer"],
-
                     ValidateAudience = true,
                     ValidAudience = configuration["Jwt:Audience"],
-
                     RequireExpirationTime = true,
                     ValidateLifetime = true
                 };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        Console.WriteLine($"JWT ERROR: {context.Exception.Message}");
+                        return Task.CompletedTask;
+                    },
+                    OnTokenValidated = context =>
+                    {
+                        Console.WriteLine("JWT OK: Token is valid.");
+                        return Task.CompletedTask;
+                    }
+                };
+
 
             });
         }

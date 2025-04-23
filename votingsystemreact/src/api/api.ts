@@ -22,13 +22,16 @@ export interface SubmitVoteRequestDto {
 
 
 
+
+const API_URL = "https://localhost:7294/api/votes";
+
 export async function getActivePolls(token: string): Promise<PollResponseDto[]> {
-  const response = await axios.get("https://localhost:7294/api/votes", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return response.data;
+    const response = await axios.get(API_URL, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+    return response.data;
 }
 
 
