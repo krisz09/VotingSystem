@@ -69,3 +69,37 @@ git clone https://github.com/krisz09/VotingSystem.git
 cd VotingSystem/VotingSystem.WebApi
 dotnet ef database update
 dotnet run
+```
+
+## Használat
+
+### Legfontosabb API végpontok
+
+| HTTP Módszer | Végpont                     | Leírás                       |
+|--------------|------------------------------|-------------------------------|
+| `POST`       | `/api/auth/register`         | Új felhasználó regisztrációja |
+| `POST`       | `/api/auth/login`            | Bejelentkezés és token szerzés|
+| `GET`        | `/api/votes/active`          | Aktív szavazások lekérdezése  |
+| `POST`       | `/api/votes/{id}/vote`       | Szavazat leadása              |
+| `GET`        | `/api/votes/closed`          | Lezárt szavazások megtekintése|
+
+
+## Fő Funkciók
+
+✔️ Felhasználói regisztráció és bejelentkezés JWT hitelesítéssel  
+✔️ Aktív szavazások listázása  
+✔️ Szavazatok leadása  
+✔️ Lezárult szavazások megtekintése  
+✔️ JWT hitelesítés + token frissítés kezelése  
+✔️ API hívások hibakezelése
+
+## Tervek a jövőre
+
+- [ ] Adminisztrátor felület szavazások kezelésére
+- [ ] Szavazások időzítése és automatikus lezárása
+- [ ] E-mail értesítések szavazásokkal kapcsolatban
+- [ ] További autentikációs opciók (pl. Google OAuth)
+- [ ] PWA támogatás (Progressive Web App)
+- [ ] Mobil alkalmazás támogatás (React Native vagy MAUI)
+- [ ] Reszponzív dizájn mobil eszközökre
+- [ ] Teljes unit és integrációs tesztlefedettség
