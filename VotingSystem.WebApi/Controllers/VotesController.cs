@@ -35,7 +35,6 @@ namespace VotingSystem.WebApi.Controllers
             var activePolls = await _pollsService.GetActivePollsWithVotesAsync(userId);
             var pollsDto = _mapper.Map<List<PollResponseDto>>(activePolls);
 
-            // állítsuk be a HasVoted mezőt DTO-n belül is
             var votedPollIds = await _pollsService.GetVotedPollIdsForUserAsync(userId);
             foreach (var dto in pollsDto)
             {
@@ -44,6 +43,35 @@ namespace VotingSystem.WebApi.Controllers
 
             return Ok(pollsDto);
         }
+
+        [Authorize]
+        [HttpGet("closed-polls")]
+        public async Task<ActionResult> GetClosedPolls(
+    [FromQuery] string? questionText,
+    [FromQuery] DateTime? startDate,
+    [FromQuery] DateTime? endDate)
+        {
+            var closedPolls = await _pollsService.GetClosedPollsAsync(questionText, startDate, endDate);
+
+            if (closedPolls == null || !closedPolls.Any())
+            {
+                var emptyList = new List<PollResponseDto>();
+                return Ok(emptyList);
+            }
+
+            var closedPollsDto = _mapper.Map<List<PollResponseDto>>(closedPolls);
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var votedPollIds = await _pollsService.GetVotedPollIdsForUserAsync(userId);
+            foreach (var dto in closedPollsDto)
+            {
+                dto.HasVoted = votedPollIds.Contains(dto.Id);
+            }
+
+            return Ok(closedPollsDto);
+        }
+
+
 
 
         [HttpPost("submit-vote")]
@@ -77,48 +105,80 @@ namespace VotingSystem.WebApi.Controllers
             var user = await _context.Users.FirstOrDefaultAsync();
             if (user == null)
             {
-                return BadRequest("Nincs felhasználó az adatbázisban.");
+                return BadRequest("No users found in the database.");
             }
 
             if (!_context.Polls.Any())
             {
+                var now = DateTime.UtcNow;
+
                 var polls = new List<Poll>
         {
+            // ✅ Active Poll
             new Poll
             {
-                Question = "Mi a kedvenc színed?",
-                StartDate = DateTime.UtcNow.AddDays(-1),
-                EndDate = DateTime.UtcNow.AddDays(10),
+                Question = "What is your favorite color?",
+                StartDate = now.AddDays(-1),
+                EndDate = now.AddDays(5),
                 CreatedByUserId = user.Id,
                 PollOptions = new List<PollOption>
                 {
-                    new PollOption { OptionText = "Piros" },
-                    new PollOption { OptionText = "Kék" },
-                    new PollOption { OptionText = "Zöld" }
+                    new PollOption { OptionText = "Red" },
+                    new PollOption { OptionText = "Blue" },
+                    new PollOption { OptionText = "Green" }
                 }
             },
             new Poll
             {
-                Question = "Melyik nyelvet szereted?",
-                StartDate = DateTime.UtcNow.AddDays(-1),
-                EndDate = DateTime.UtcNow.AddDays(10),
+                Question = "What is your programming language?",
+                StartDate = now.AddDays(-1),
+                EndDate = now.AddDays(5),
                 CreatedByUserId = user.Id,
                 PollOptions = new List<PollOption>
                 {
                     new PollOption { OptionText = "C#" },
                     new PollOption { OptionText = "Java" },
-                    new PollOption { OptionText = "Python" }
+                    new PollOption { OptionText = "C++" }
+                }
+            },
+
+            new Poll
+            {
+                Question = "Which framework do you prefer?",
+                StartDate = now.AddDays(-10),
+                EndDate = now.AddDays(-1),
+                CreatedByUserId = user.Id,
+                PollOptions = new List<PollOption>
+                {
+                    new PollOption { OptionText = "React" },
+                    new PollOption { OptionText = "Angular" },
+                    new PollOption { OptionText = "Vue" }
+                }
+            },
+
+            // ✅ Another Closed Poll
+            new Poll
+            {
+                Question = "What is your favorite backend language?",
+                StartDate = now.AddDays(-7),
+                EndDate = now.AddDays(-2),
+                CreatedByUserId = user.Id,
+                PollOptions = new List<PollOption>
+                {
+                    new PollOption { OptionText = "C#" },
+                    new PollOption { OptionText = "Java" },
+                    new PollOption { OptionText = "Node.js" }
                 }
             }
-                };
+        };
 
                 _context.Polls.AddRange(polls);
                 await _context.SaveChangesAsync();
 
-                return Ok("Teszt szavazások létrehozva.");
+                return Ok("Test polls (active and closed) created.");
             }
 
-            return Ok("Már léteznek szavazások, nem hoztam létre újakat.");
+            return Ok("Polls already exist — no new test polls created.");
         }
 
         [HttpDelete("delete-all")]

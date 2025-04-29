@@ -39,6 +39,29 @@ namespace VotingSystem.DataAccess.Services
             return polls;
         }
 
+        public async Task<IReadOnlyCollection<Poll>> GetClosedPollsAsync(string? questionText, DateTime? startDate, DateTime? endDate)
+        {
+            var closedPollsQuery = _context.Polls
+                .Where(p => p.EndDate < DateTime.Now); // Polls that have ended
+
+            if (!string.IsNullOrEmpty(questionText))
+            {
+                closedPollsQuery = closedPollsQuery.Where(p => p.Question.Contains(questionText));
+            }
+
+            if (startDate.HasValue)
+            {
+                closedPollsQuery = closedPollsQuery.Where(p => p.EndDate >= startDate.Value);
+            }
+
+            if (endDate.HasValue)
+            {
+                closedPollsQuery = closedPollsQuery.Where(p => p.EndDate <= endDate.Value);
+            }
+
+            return await closedPollsQuery.ToListAsync();
+        }
+
         public async Task<List<int>> GetVotedPollIdsForUserAsync(string userId)
         {
             return await _context.Votes

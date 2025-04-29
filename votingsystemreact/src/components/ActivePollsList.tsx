@@ -9,11 +9,14 @@ interface Props {
 const ActivePollsList: React.FC<Props> = ({ onSelectPoll }) => {
     const [polls, setPolls] = useState<PollResponseDto[]>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null); // State for errors
     const { token } = useAuth(); // 🔑 Getting the token here
 
     useEffect(() => {
         if (!token) return;
-        console.log("Token sent to backend:", token);
+
+        setLoading(true);
+        setError(null); // Clear previous errors on new fetch
 
         getActivePolls(token)
             .then(data => {
@@ -22,34 +25,33 @@ const ActivePollsList: React.FC<Props> = ({ onSelectPoll }) => {
             })
             .catch(err => {
                 console.error("Error fetching active polls:", err);
+                setError("Failed to load active polls.");
                 setLoading(false);
             });
     }, [token]);
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <p>Loading active polls...</p>;
+    if (error) return <p style={{ color: "red" }}>{error}</p>; // Display error message if fetching fails
 
     return (
-        <div>
+        <div className="active-polls-container">
             <h2>Active Polls</h2>
             {polls.length === 0 ? (
-                <p>No active polls.</p>
+                <p>No active polls available.</p>
             ) : (
-                <ul>
-                    {polls.map(poll => (
-                        <li key={poll.id} style={{ marginBottom: "10px" }}>
-                            <button onClick={() => onSelectPoll(poll)}>
-                                <strong>{poll.question}</strong>
-                            </button>
-                            <div>
-                                {poll.hasVoted ? (
-                                    <span style={{ color: "green" }}>✔ You have voted</span>
-                                ) : (
-                                    <span style={{ color: "gray" }}>✖ You haven't voted yet</span>
-                                )}
-                            </div>
-                        </li>
-                    ))}
-                </ul>
+                polls.map(poll => (
+                    <div key={poll.id} className="active-poll-card">
+                        <h3>{poll.question}</h3>
+                        <div>
+                            {poll.hasVoted ? (
+                                <span style={{ color: "green" }}>✔ You have voted</span>
+                            ) : (
+                                <span style={{ color: "gray" }}>✖ You haven't voted yet</span>
+                            )}
+                        </div>
+                        <button onClick={() => onSelectPoll(poll)}>View Poll</button>
+                    </div>
+                ))
             )}
         </div>
     );

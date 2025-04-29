@@ -1,9 +1,11 @@
 ﻿import React, { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { login as loginApi } from "../api/api"; // ⬅️ fontos: átneveztük, hogy ne ütközzön a useAuth login-nel
+import { useNavigate } from "react-router-dom";
 
 const LoginForm: React.FC = () => {
     const { login } = useAuth();
+    const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -16,6 +18,7 @@ const LoginForm: React.FC = () => {
         try {
             const token = await loginApi(email, password); // ⬅️ itt hívjuk az api.ts-ben lévőt
             login(token); // ⬅️ itt hívjuk az AuthContext-es login-t
+            navigate("/active-polls");
         } catch (err) {
             setError("Hibás email vagy jelszó.");
         }

@@ -12,45 +12,63 @@ const PollDetails: React.FC<Props> = ({ poll, onBack }) => {
     const { userId } = useAuth();
     const [selectedOptionId, setSelectedOptionId] = useState<number | null>(null);
     const [message, setMessage] = useState<string | null>(null);
+    const [hasVoted, setHasVoted] = useState<boolean>(poll.hasVoted);
+    const [submitting, setSubmitting] = useState<boolean>(false);
 
     const handleVote = async () => {
         if (selectedOptionId !== null && userId) {
             try {
+                setSubmitting(true);
                 await submitVote(selectedOptionId, userId);
-                setMessage("Vote successfully recorded! 🎉");
+                setMessage("✅ Vote submitted successfully!");
+                setHasVoted(true);
             } catch (error) {
-                console.error("Voting error:", error);
-                setMessage("An error occurred while submitting your vote.");
+                console.error("Error submitting vote:", error);
+                setMessage("❌ There was an error submitting your vote.");
+            } finally {
+                setSubmitting(false);
             }
+        } else {
+            setMessage("❗ Please select an option before submitting.");
         }
     };
 
     return (
-        <div>
+        <div className="card">
             <h2>{poll.question}</h2>
-            <ul>
+
+            <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
                 {poll.pollOptions.map(option => (
-                    <li key={option.id}>
+                    <li key={option.id} style={{ marginBottom: "10px" }}>
                         <label>
                             <input
                                 type="radio"
                                 name="pollOption"
                                 value={option.id}
+                                disabled={hasVoted}
                                 checked={selectedOptionId === option.id}
                                 onChange={() => setSelectedOptionId(option.id)}
                             />
-                            {option.optionText}
+                            {" "}{option.optionText}
                         </label>
                     </li>
                 ))}
             </ul>
-            <button onClick={handleVote} disabled={selectedOptionId === null}>
-                Vote
-            </button>
-            <br />
-            <button onClick={onBack}>Back</button>
 
-            {message && <p style={{ marginTop: "10px", color: "green" }}>{message}</p>}
+            {!hasVoted && (
+                <button onClick={handleVote} disabled={selectedOptionId === null || submitting}>
+                    {submitting ? "Submitting..." : "Submit Vote"}
+                </button>
+            )}
+
+            <br />
+            <button onClick={onBack} style={{ marginTop: "15px" }}>
+                ← Back to Polls
+            </button>
+
+            {message && (
+                <p style={{ marginTop: "15px", color: hasVoted ? "green" : "red" }}>{message}</p>
+            )}
         </div>
     );
 };

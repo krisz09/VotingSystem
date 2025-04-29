@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VotingSystem.DataAccess")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+cff2b083550bd716ead68394fa951cff2c5266dd")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e0f136461056b604d7d4147c4601d4b46d92ac1f")]
 [assembly: System.Reflection.AssemblyProductAttribute("VotingSystem.DataAccess")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VotingSystem.DataAccess")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

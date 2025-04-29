@@ -12,5 +12,6 @@ namespace VotingSystem.DataAccess.Services
         public Task<List<int>> GetVotedPollIdsForUserAsync(string userId);
         public Task<bool> SubmitVoteAsync(int pollOptionId, string userId);
         public Task<IReadOnlyCollection<Poll>> GetAllPollsAsync();
+        public Task<IReadOnlyCollection<Poll>> GetClosedPollsAsync(string? questionText, DateTime? startDate, DateTime? endDate);
     }
 }
