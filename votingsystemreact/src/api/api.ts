@@ -15,6 +15,18 @@ export interface PollResponseDto {
     hasVoted: boolean;
 }
 
+export interface PollOptionResultDto {
+    id: number;
+    optionText: string;
+    voteCount: number;
+}
+
+export interface PollResultDto {
+    id: number;
+    question: string;
+    options: PollOptionResultDto[];
+}
+
 export interface SubmitVoteRequestDto {
     pollOptionId: number;
     userId: string;
@@ -59,6 +71,16 @@ export async function register(email: string, password: string): Promise<string>
         throw new Error("Failed to register.");
     }
 }
+
+export async function getPollResults(pollId: number, token: string): Promise<PollResultDto> {
+    const response = await axios.get(`https://localhost:7294/api/votes/${pollId}/results`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    return response.data;
+}   
 
 // Function to submit vote
 export async function submitVote(pollOptionId: number, userId: string): Promise<void> {

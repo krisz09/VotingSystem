@@ -1,6 +1,7 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { useAuth } from "../context/AuthContext";
-import { PollResponseDto, getClosedPolls } from "../api/api";
+import { PollResponseDto, PollResultDto, getClosedPolls, getPollResults } from "../api/api";
+
 
 const ClosedPollsList: React.FC = () => {
     const [closedPolls, setClosedPolls] = useState<PollResponseDto[]>([]);
@@ -11,10 +12,13 @@ const ClosedPollsList: React.FC = () => {
     const [startDateInput, setStartDateInput] = useState<string | null>(null);
     const [endDateInput, setEndDateInput] = useState<string | null>(null);
 
-    // Filters used for API requests
     const [questionText, setQuestionText] = useState('');
     const [startDate, setStartDate] = useState<string | null>(null);
     const [endDate, setEndDate] = useState<string | null>(null);
+
+    const [selectedPollResult, setSelectedPollResult] = useState<PollResultDto | null>(null);
+    const [resultsLoading, setResultsLoading] = useState(false);
+    const [resultsError, setResultsError] = useState<string | null>(null);
 
     const { token } = useAuth();
 
@@ -39,6 +43,23 @@ const ClosedPollsList: React.FC = () => {
         setQuestionText(questionInput);
         setStartDate(startDateInput);
         setEndDate(endDateInput);
+    };
+
+    const handleViewPoll = (pollId: number) => {
+        if (!token) return;
+
+        setResultsLoading(true);
+        setResultsError(null);
+
+        getPollResults(pollId, token)
+            .then(result => {
+                setSelectedPollResult(result);
+            })
+            .catch(err => {
+                console.error("Error fetching poll results:", err);
+                setResultsError("Failed to load poll results.");
+            })
+            .finally(() => setResultsLoading(false));
     };
 
     return (
@@ -86,18 +107,60 @@ const ClosedPollsList: React.FC = () => {
             ) : closedPolls.length === 0 ? (
                 <p>No closed polls available.</p>
             ) : (
-                <div className="polls-list">
-                    {closedPolls.map(poll => (
-                        <div key={poll.id} className="poll-card">
-                            <h3>{poll.question}</h3>
-                            <p>End Date: {new Date(poll.endDate).toLocaleString()}</p>
-                            <button onClick={() => console.log('View Poll:', poll.id)}>View Poll</button>
+                <>
+                    <div className="polls-list">
+                        {closedPolls.map(poll => (
+                            <div key={poll.id} className="poll-card">
+                                <h3>{poll.question}</h3>
+                                <p>End Date: {new Date(poll.endDate).toLocaleString()}</p>
+                                <button onClick={() => handleViewPoll(poll.id)}>View Poll</button>
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Poll Results Section */}
+                    {resultsLoading && <p>Loading poll results...</p>}
+
+                    {resultsError && <p style={{ color: 'red' }}>{resultsError}</p>}
+
+                    {selectedPollResult && (
+                        <div className="poll-results">
+                            <h2>Poll Results: {selectedPollResult.question}</h2>
+
+                            <ul>
+                                {selectedPollResult.options.map(option => {
+                                    const totalVotes = selectedPollResult.options.reduce((sum, opt) => sum + opt.voteCount, 0);
+                                    const percentage = totalVotes > 0 ? ((option.voteCount / totalVotes) * 100).toFixed(2) : "0.00";
+
+                                    return (
+                                        <li key={option.id} style={{ marginBottom: '10px' }}>
+                                            <div><strong>{option.optionText}</strong>: {option.voteCount} votes ({percentage}%)</div>
+                                            <div style={{
+                                                backgroundColor: '#e0e0e0',
+                                                borderRadius: '8px',
+                                                overflow: 'hidden',
+                                                height: '16px',
+                                                marginTop: '4px'
+                                            }}>
+                                                <div style={{
+                                                    width: `${percentage}%`,
+                                                    backgroundColor: '#4caf50',
+                                                    height: '100%'
+                                                }}></div>
+                                            </div>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
+
+                            <button onClick={() => setSelectedPollResult(null)}>Close Results</button>
                         </div>
-                    ))}
-                </div>
+                    )}
+                </>
             )}
         </div>
     );
 };
 
 export default ClosedPollsList;
+    

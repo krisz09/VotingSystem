@@ -16,7 +16,7 @@ const ActivePollsList: React.FC<Props> = ({ onSelectPoll }) => {
         if (!token) return;
 
         setLoading(true);
-        setError(null); // Clear previous errors on new fetch
+        setError(null);
 
         getActivePolls(token)
             .then(data => {
@@ -31,7 +31,7 @@ const ActivePollsList: React.FC<Props> = ({ onSelectPoll }) => {
     }, [token]);
 
     if (loading) return <p>Loading active polls...</p>;
-    if (error) return <p style={{ color: "red" }}>{error}</p>; // Display error message if fetching fails
+    if (error) return <p style={{ color: "red" }}>{error}</p>;
 
     return (
         <div className="active-polls-container">

@@ -91,6 +91,35 @@ namespace VotingSystem.WebApi.Controllers
             return BadRequest("Failed to submit vote.");
         }
 
+        [HttpGet("{pollId}/results")]
+        public async Task<IActionResult> GetPollResults(int pollId)
+        {
+            var poll = await _context.Polls
+                .Include(p => p.PollOptions)
+                    .ThenInclude(po => po.Votes)
+                .FirstOrDefaultAsync(p => p.Id == pollId);
+
+            if (poll == null)
+            {
+                return NotFound();
+            }
+
+            var resultDto = new PollResultDto
+            {
+                Id = poll.Id,
+                Question = poll.Question,
+                Options = poll.PollOptions.Select(option => new PollOptionResultDto
+                {
+                    Id = option.Id,
+                    OptionText = option.OptionText,
+                    VoteCount = option.Votes.Count  // <--- mapping vote count
+                }).ToList()
+            };
+
+            return Ok(resultDto);
+        }
+
+        /* ----------- FOR TESTING
         [HttpGet("all")]
         public async Task<IActionResult> GetAllPolls()
         {
@@ -98,6 +127,7 @@ namespace VotingSystem.WebApi.Controllers
             var mapped = _mapper.Map<List<PollResponseDto>>(polls);
             return Ok(mapped);
         }
+        */
 
         [HttpPost("create-test-polls")]
         public async Task<IActionResult> CreateTestPolls()
