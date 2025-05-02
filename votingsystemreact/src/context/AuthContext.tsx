@@ -27,7 +27,7 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [token, setToken] = useState<string | null>(null);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const isLoggedIn = !!token;
     const [userId, setUserId] = useState<string | null>(null);
 
     useEffect(() => {
@@ -37,7 +37,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 const decoded = jwtDecode<JwtPayload>(savedToken);
                 setToken(savedToken);
                 setUserId(decoded.sub);
-                setIsLoggedIn(true);
             } catch (error) {
                 console.error("Hibás token:", error);
                 logout();
@@ -51,7 +50,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             localStorage.setItem("token", newToken);
             setToken(newToken);
             setUserId(decoded.sub);
-            setIsLoggedIn(true);
         } catch (error) {
             console.error("Hibás token a login során:", error);
         }
@@ -59,10 +57,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const logout = () => {
         localStorage.removeItem("token");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("userId");
         setToken(null);
         setUserId(null);
-        setIsLoggedIn(false);
     };
+
 
     return (
         <AuthContext.Provider value={{ isLoggedIn, token, userId, login, logout }}>

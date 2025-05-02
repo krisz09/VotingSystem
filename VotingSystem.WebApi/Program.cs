@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using VotingSystem.DataAccess;
+using VotingSystem.DataAccess.Config;
 using VotingSystem.DataAccess.Extensions;
 
 namespace VotingSystem.WebApi
@@ -20,7 +21,7 @@ namespace VotingSystem.WebApi
             {
                 options.AddPolicy("AllowReactApp", policy =>
                 {
-                    policy.WithOrigins("http://localhost:63670") // vagy 3000 vagy 63670 (React portod!)
+                    policy.WithOrigins("http://localhost:3000") // vagy 3000 vagy 63670 (React portod!)
                           .AllowAnyHeader()
                           .AllowAnyMethod()
                           .AllowCredentials();
@@ -28,6 +29,7 @@ namespace VotingSystem.WebApi
             });
             builder.Services.AddControllers();
             builder.Services.AddDataAccess(builder.Configuration);
+            builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
             builder.Services.ConfigureDatabaseAndIdentity(builder.Configuration);
             builder.Services.ConfigureJwtAuthentication(builder.Configuration);
             builder.Services.AddEndpointsApiExplorer();

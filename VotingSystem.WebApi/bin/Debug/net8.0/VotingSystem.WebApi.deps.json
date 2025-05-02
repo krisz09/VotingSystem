@@ -1014,21 +1014,12 @@
           "System.IdentityModel.Tokens.Jwt": "8.0.0"
         },
         "runtime": {
-          "VotingSystem.DataAccess.dll": {
-            "assemblyVersion": "1.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "VotingSystem.DataAccess.dll": {}
         }
       },
       "VotingSystem.Shared/1.0.0": {
-        "dependencies": {
-          "VotingSystem.DataAccess": "1.0.0"
-        },
         "runtime": {
-          "VotingSystem.Shared.dll": {
-            "assemblyVersion": "1.0.0",
-            "fileVersion": "1.0.0.0"
-          }
+          "VotingSystem.Shared.dll": {}
         }
       }
     }

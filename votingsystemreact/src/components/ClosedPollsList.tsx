@@ -20,24 +20,20 @@ const ClosedPollsList: React.FC = () => {
     const [resultsLoading, setResultsLoading] = useState(false);
     const [resultsError, setResultsError] = useState<string | null>(null);
 
-    const { token } = useAuth();
 
     useEffect(() => {
-        if (!token) return;
-
         setLoading(true);
         setError(null);
 
-        getClosedPolls(token, questionText, startDate, endDate)
-            .then(data => {
-                setClosedPolls(data);
-            })
+        getClosedPolls(questionText, startDate, endDate)
+            .then(data => setClosedPolls(data))
             .catch(err => {
                 console.error("Error fetching closed polls:", err);
                 setError("Failed to load closed polls.");
             })
             .finally(() => setLoading(false));
-    }, [token, questionText, startDate, endDate]);
+    }, [questionText, startDate, endDate]); // ❗ nincs már token dependency
+
 
     const handleApplyFilters = () => {
         setQuestionText(questionInput);
@@ -46,21 +42,18 @@ const ClosedPollsList: React.FC = () => {
     };
 
     const handleViewPoll = (pollId: number) => {
-        if (!token) return;
-
         setResultsLoading(true);
         setResultsError(null);
 
-        getPollResults(pollId, token)
-            .then(result => {
-                setSelectedPollResult(result);
-            })
+        getPollResults(pollId)
+            .then(result => setSelectedPollResult(result))
             .catch(err => {
                 console.error("Error fetching poll results:", err);
                 setResultsError("Failed to load poll results.");
             })
             .finally(() => setResultsLoading(false));
     };
+
 
     return (
         <div className="closed-polls-container">

@@ -150,7 +150,6 @@ C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\b
 C:\Egyetem\4.félév\C# .NET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\bin\Debug\net8.0\appsettings.Development.json
 C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\bin\Debug\net8.0\appsettings.json
-C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\bin\Debug\net8.0\VotingSystem.WebApi.staticwebassets.endpoints.json
 C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\bin\Debug\net8.0\VotingSystem.WebApi.exe
 C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\bin\Debug\net8.0\VotingSystem.WebApi.deps.json
 C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\bin\Debug\net8.0\VotingSystem.WebApi.runtimeconfig.json
@@ -281,17 +280,14 @@ C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\
 C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\VotingSystem.WebApi.MvcApplicationPartsAssemblyInfo.cs
 C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\VotingSystem.WebApi.MvcApplicationPartsAssemblyInfo.cache
 C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\VotingSystem.WebApi.sourcelink.json
-C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\scopedcss\bundle\VotingSystem.WebApi.styles.css
 C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\staticwebassets.build.json
 C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\staticwebassets.development.json
-C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\staticwebassets.build.endpoints.json
 C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\staticwebassets\msbuild.VotingSystem.WebApi.Microsoft.AspNetCore.StaticWebAssets.props
-C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\staticwebassets\msbuild.VotingSystem.WebApi.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
 C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\staticwebassets\msbuild.build.VotingSystem.WebApi.props
 C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.VotingSystem.WebApi.props
 C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.VotingSystem.WebApi.props
 C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\staticwebassets.pack.json
-C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\scopedcss\bundle\VotingSystem.WebApi.styles.css
 C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\VotingSy.2FCFF481.Up2Date
 C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\VotingSystem.WebApi.dll
 C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\refint\VotingSystem.WebApi.dll

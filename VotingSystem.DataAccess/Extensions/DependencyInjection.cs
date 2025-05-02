@@ -25,7 +25,9 @@ namespace VotingSystem.DataAccess.Extensions
             );
 
             services.AddScoped<IPollsService, PollsService>();
-         
+            services.AddScoped<IUsersService, UsersService>();
+
+
             return services;
         }
 

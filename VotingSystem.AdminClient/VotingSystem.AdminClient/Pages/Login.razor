@@ -1,0 +1,73 @@
+﻿@page "/login"
+@using VotingSystem.AdminClient.ViewModels
+@using VotingSystem.AdminClient.Services
+@using Microsoft.AspNetCore.Components.Forms
+@inject IAuthenticationService AuthService
+@inject NavigationManager Navigation
+
+<h3>Bejelentkezés</h3>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <p style="color:red">@errorMessage</p>
+}
+
+<EditForm EditContext="@editContext" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div>
+        <label>Email:</label>
+        <InputText @bind-Value="loginModel.Email" />
+        <ValidationMessage For="@(() => loginModel.Email)" />
+    </div>
+
+    <div>
+        <label>Jelszó:</label>
+        <InputText type="password" @bind-Value="loginModel.Password" />
+        <ValidationMessage For="@(() => loginModel.Password)" />
+    </div>
+
+    <button type="submit" disabled="@isSubmitting">Bejelentkezés</button>
+</EditForm>
+
+@code {
+    private LoginViewModel loginModel = new();
+    private EditContext editContext;
+    private bool isSubmitting = false;
+    private string errorMessage = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        editContext = new EditContext(loginModel);
+    }
+
+    private async Task HandleLogin()
+    {
+        errorMessage = string.Empty;
+        isSubmitting = true;
+
+        if (!editContext.Validate())
+        {
+            isSubmitting = false;
+            return;
+        }
+
+        var success = await AuthService.LoginAsync(new Shared.Models.LoginRequestDto
+        {
+            Email = loginModel.Email!,
+            Password = loginModel.Password!
+        });
+
+        if (success)
+        {
+            Navigation.NavigateTo("/mypolls");
+        }
+        else
+        {
+            errorMessage = "Hibás bejelentkezési adatok!";
+        }
+
+        isSubmitting = false;
+    }
+}

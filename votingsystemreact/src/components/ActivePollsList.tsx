@@ -1,6 +1,5 @@
 ﻿import React, { useEffect, useState } from "react";
 import { PollResponseDto, getActivePolls } from "../api/api";
-import { useAuth } from "../context/AuthContext";
 
 interface Props {
     onSelectPoll: (poll: PollResponseDto) => void;
@@ -9,16 +8,13 @@ interface Props {
 const ActivePollsList: React.FC<Props> = ({ onSelectPoll }) => {
     const [polls, setPolls] = useState<PollResponseDto[]>([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null); // State for errors
-    const { token } = useAuth(); // 🔑 Getting the token here
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        if (!token) return;
-
         setLoading(true);
         setError(null);
 
-        getActivePolls(token)
+        getActivePolls()
             .then(data => {
                 setPolls(data);
                 setLoading(false);
@@ -28,7 +24,7 @@ const ActivePollsList: React.FC<Props> = ({ onSelectPoll }) => {
                 setError("Failed to load active polls.");
                 setLoading(false);
             });
-    }, [token]);
+    }, []);
 
     if (loading) return <p>Loading active polls...</p>;
     if (error) return <p style={{ color: "red" }}>{error}</p>;
