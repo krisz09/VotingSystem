@@ -62,6 +62,27 @@ namespace VotingSystem.DataAccess.Services
             return await closedPollsQuery.ToListAsync();
         }
 
+        public async Task<IReadOnlyCollection<Poll>> GetPollsCreatedByUser(string userId)
+        {
+            var polls = await _context.Polls
+                .Include(p => p.PollOptions)
+                    .ThenInclude(o => o.Votes)
+                        .ThenInclude(v => v.User)
+                .Where(p => p.CreatedByUserId == userId)
+                .ToListAsync();
+
+            return polls;
+        }
+
+        public async Task<bool> CreatePollAsync(Poll newPoll)
+        {
+            _context.Polls.Add(newPoll);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+
+
         public async Task<List<int>> GetVotedPollIdsForUserAsync(string userId)
         {
             return await _context.Votes

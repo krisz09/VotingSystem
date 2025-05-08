@@ -9,6 +9,10 @@ namespace VotingSystem.AdminClient.Infrastructure
         public BlazorMappingProfile()
         {
             CreateMap<LoginViewModel, LoginRequestDto>(MemberList.Source);
+            CreateMap<PollResponseDto, PollViewModel>()
+                .ForMember(dest => dest.Options, opt => opt.MapFrom(src => src.PollOptions));
+            CreateMap<PollOptionDto, PollOptionViewModel>();
+            CreateMap<VoterDto, VoterViewModel>();
         }
     }
 }

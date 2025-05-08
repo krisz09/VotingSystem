@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 using VotingSystem.DataAccess;
 using VotingSystem.DataAccess.Config;
@@ -25,6 +26,11 @@ namespace VotingSystem.WebApi
                           .AllowAnyHeader()
                           .AllowAnyMethod()
                           .AllowCredentials();
+
+                    policy.WithOrigins("https://localhost:7192")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials();
                 });
             });
             builder.Services.AddControllers();
@@ -33,12 +39,51 @@ namespace VotingSystem.WebApi
             builder.Services.ConfigureDatabaseAndIdentity(builder.Configuration);
             builder.Services.ConfigureJwtAuthentication(builder.Configuration);
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "VotingSystem API", Version = "v1" });
+
+                // Enable JWT authorization
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Description = "JWT Authorization header using the Bearer scheme. Example: 'Bearer {token}'",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = ParameterLocation.Header,
+            },
+            new List<string>()
+        }
+    });
+            });
+
             builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
             var app = builder.Build();
 
-            
+            using (var scope = app.Services.CreateScope())
+            {
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                if(!await roleManager.RoleExistsAsync("Admin"))
+                {
+                    await roleManager.CreateAsync(new IdentityRole("Admin"));
+                }
+            }
 
             app.UseCors("AllowReactApp");
 
@@ -58,7 +103,7 @@ namespace VotingSystem.WebApi
 
             app.MapControllers();
 
-            app.Run();
+            await app.RunAsync();
         }
     }
 }

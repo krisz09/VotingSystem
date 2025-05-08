@@ -13,7 +13,9 @@ namespace VotingSystem.WebApi.Infrastructure
             .ForSourceMember(src => src.Password, opt => opt.DoNotValidate())
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email));
 
-            CreateMap<User, UserResponseDto>(MemberList.Destination);
+            CreateMap<User, UserResponseDto>()
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.UserName));
+
             // Map RegisterDto to User
             CreateMap<RegisterDto, User>()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Email))
@@ -24,10 +26,25 @@ namespace VotingSystem.WebApi.Infrastructure
                 .ForMember(dest => dest.PollOptions, opt => opt.MapFrom(src => src.PollOptions))  // Map PollOptions
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))                       // Map Id (you can remove this if it's already mapped automatically)
                 .ForMember(dest => dest.Question, opt => opt.MapFrom(src => src.Question))           // Map Question
-                .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.EndDate));            // Map EndDate
+                .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.EndDate))           // Map EndDate
+                .ForMember(dest => dest.Voters, opt => opt.MapFrom(
+                    src => src.PollOptions
+                    .SelectMany(o => o.Votes)
+                    .Select(v => v.User)
+                    .Distinct()
+                    ));
 
             // Map PollOption to PollOptionDto
             CreateMap<PollOption, PollOptionDto>();
+
+            CreateMap<CreatePollRequestDto, Poll>()
+    .ForMember(dest => dest.PollOptions, opt => opt.MapFrom(src =>
+        src.Options.Select(opt => new PollOption
+        {
+            OptionText = opt
+        }).ToList()));
+
+
         }
     }
 }

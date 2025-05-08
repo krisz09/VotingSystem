@@ -1,0 +1,42 @@
+﻿@inject IToastService ToastService
+@using VotingSystem.AdminClient.Services
+
+@if (!string.IsNullOrWhiteSpace(_message))
+{
+    <div class="toast-message @GetCssClass(_level)">
+        @_message
+    </div>
+}
+
+@code {
+    private string? _message;
+    private ToastLevel _level;
+
+    protected override void OnInitialized()
+    {
+        ToastService.OnShow += ShowToast;
+    }
+
+    private void ShowToast(string message, ToastLevel level)
+    {
+        _message = message;
+        _level = level;
+
+        StateHasChanged();
+
+        _ = Task.Run(async () =>
+        {
+            await Task.Delay(4000); // toast disappears after 4s
+            _message = null;
+            await InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private string GetCssClass(ToastLevel level) => level switch
+    {
+        ToastLevel.Success => "bg-success text-white p-3 rounded",
+        ToastLevel.Error => "bg-danger text-white p-3 rounded",
+        ToastLevel.Warning => "bg-warning text-dark p-3 rounded",
+        _ => "bg-info text-white p-3 rounded"
+    };
+}

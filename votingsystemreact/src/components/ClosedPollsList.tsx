@@ -1,5 +1,4 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { useAuth } from "../context/AuthContext";
 import { PollResponseDto, PollResultDto, getClosedPolls, getPollResults } from "../api/api";
 
 

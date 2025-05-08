@@ -33,7 +33,6 @@ export interface SubmitVoteRequestDto {
 }
 
 const API_URL = "https://localhost:7294/api/votes";
-const AUTH_URL = "https://localhost:7294/api/auth";
 
 // Function to get active polls
 export async function getActivePolls(): Promise<PollResponseDto[]> {

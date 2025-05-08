@@ -1,16 +1,88 @@
 ﻿@inherits LayoutComponentBase
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+@inject IAuthenticationService AuthService
+@inject NavigationManager NavigationManager
+@inject AuthState authState
+@using VotingSystem.AdminClient.Services
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+<PageTitle>Voting System Admin</PageTitle>
+
+@if (!initialized)
+{
+    <!-- Optional: You can show a spinner here -->
+    <div class="text-center mt-5">
+        <p>Loading...</p>
+    </div>
+}
+else
+{
+    <div class="d-flex flex-column min-vh-100">
+        <!-- Navigation Bar -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">Voting Admin</a>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        @if (isLoggedIn)
+                        {
+                            <li class="nav-item">
+                                <div class="d-flex justify-content-end">
+                                    <button class="btn btn-outline-light" @onclick="Logout">Logout</button>
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <NavLink href="/mypolls" class="nav-link" activeClass="active">My Polls</NavLink>
+                            </li>
+                            <li class="nav-item">
+                                <NavLink href="/create-poll" class="nav-link" activeClass="active">Create Poll</NavLink>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <NavLink href="/login" class="nav-link" activeClass="active">Login</NavLink>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Toast messages -->
+        <div class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
+            <Toast />
         </div>
 
-        <article class="content px-4">
+        <!-- Main content -->
+        <div class="container my-4">
             @Body
-        </article>
-    </main>
-</div>
+        </div>
+
+        <footer class="mt-auto bg-light text-center py-3 border-top">
+            <small>&copy; @DateTime.Now.Year - Voting System Admin</small>
+        </footer>
+    </div>
+}
+
+@code {
+    private bool initialized = false;
+    private bool isLoggedIn => authState.IsLoggedIn;    
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await AuthService.GetTokenAsync();
+        authState.SetLoginState(!string.IsNullOrEmpty(token));
+        initialized = true;
+        authState.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        authState.OnChange -= StateHasChanged;
+    }
+
+    private async Task Logout()
+    {
+        await AuthService.LogoutAsync();
+        NavigationManager.NavigateTo("/login", forceLoad: true);
+    }
+}

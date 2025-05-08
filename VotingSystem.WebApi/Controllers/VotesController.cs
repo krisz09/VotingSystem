@@ -71,6 +71,90 @@ namespace VotingSystem.WebApi.Controllers
             return Ok(closedPollsDto);
         }
 
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<PollResponseDto>>> GetAllPolls()
+        {
+            var polls = await _context.Polls
+                .Include(p => p.PollOptions)
+                .ToListAsync();
+
+            var dto = _mapper.Map<List<PollResponseDto>>(polls);
+
+            return Ok(dto);
+        }
+
+
+
+        [Authorize]
+        [HttpGet("mypolls")]
+        public async Task<ActionResult<List<PollResponseDto>>> GetMyPolls()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
+
+            var polls = await _pollsService.GetPollsCreatedByUser(userId);
+
+            var pollResponseDtos = _mapper.Map<List<PollResponseDto>>(polls);
+
+            return Ok(pollResponseDtos);
+        }
+
+        [Authorize]
+        [HttpPost("create")]
+        public async Task<IActionResult> CreatePoll([FromBody] CreatePollRequestDto dto)
+        {
+            try
+            {
+                Console.WriteLine($"Question: {dto.Question}");
+                Console.WriteLine($"StartDate: {dto.StartDate}");
+                Console.WriteLine($"End: {dto.EndDate}");
+                Console.WriteLine($"Options count: {dto.Options.Count}");
+
+                foreach (var claim in User.Claims)
+                {
+                    Console.WriteLine($"{claim.Type}: {claim.Value}");
+                }
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            Console.WriteLine("User ID from token: " + userId);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+
+            // + Debug: ellenőrizzük, hogy az EF látja-e ezt a userId-t
+            var userExists = await _context.Users.AnyAsync(u => u.Id == userId);
+                Console.WriteLine("user in db:" + userExists);
+
+            if (!userExists)
+            {
+                Console.WriteLine("User not found");
+                return BadRequest("User not found in AspNetUsers table.");
+            }
+
+
+            if (dto.StartDate < DateTime.UtcNow || dto.EndDate < DateTime.UtcNow || (dto.EndDate - dto.StartDate).TotalMinutes < 15)
+                return BadRequest("Invalid date range");
+
+            var poll = _mapper.Map<Poll>(dto);
+            poll.CreatedByUserId = userId;
+
+                Console.WriteLine("Poll mapped success");
+
+                await _pollsService.CreatePollAsync(poll);
+
+                Console.WriteLine("Poll saved success");
+            return Ok(); // Optionally return the created poll DTO if needed
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("Hiba történt a createPoll során: " + ex.Message);
+                return StatusCode(500, "server erro:" + ex.Message);
+            }
+        }
 
 
 

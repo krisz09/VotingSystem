@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using VotingSystem.AdminClient.Infrastructure;
 
 namespace VotingSystem.AdminClient
 {
@@ -11,7 +12,8 @@ namespace VotingSystem.AdminClient
             builder.RootComponents.Add<App>("#app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddBlazorServices(builder.Configuration);
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7294") });
 
             await builder.Build().RunAsync();
         }

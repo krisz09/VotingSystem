@@ -1,0 +1,101 @@
+﻿@page "/create-poll"
+@inject IPollsService PollService
+@inject NavigationManager Navigation
+@using VotingSystem.AdminClient.Services
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title text-center mb-4">Create new poll</h4>
+
+                    <EditForm Model="model" OnValidSubmit="HandleValidSubmit">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <div class="mb-3">
+                            <label class="form-label">Question</label>
+                            <InputText class="form-control" @bind-Value="model.Question" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Start date</label>
+                            <input type="datetime-local" class="form-control" @bind="model.StartDate" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">End date</label>
+                            <input type="datetime-local" class="form-control" @bind="model.EndDate" />
+                        </div>
+
+
+                        <div class="mb-3">
+                            <label class="form-label">Vote options</label>
+
+                            @for (int i = 0; i < model.Options.Count; i++)
+                            {
+                                var index = i;
+                                <div class="input-group mb-2">
+                                    <InputText class="form-control" @bind-Value="model.Options[index]" />
+                                    <button type="button" class="btn btn-outline-danger" @onclick="() => RemoveOption(index)">
+                                        ❌
+                                    </button>
+                                </div>
+                            }
+
+                            <button type="button" class="btn btn-outline-primary btn-sm" @onclick="AddOption">
+                                ➕ New option
+                            </button>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            Create poll
+                        </button>
+
+                        @if (!string.IsNullOrEmpty(ErrorMessage))
+                        {
+                            <div class="alert alert-danger mt-3">@ErrorMessage</div>
+                        }
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private CreatePollViewModel model = new();
+    private string ErrorMessage = "";
+
+    private void AddOption() => model.Options.Add("");
+
+    private void RemoveOption(int index) => model.Options.RemoveAt(index);
+
+    private async Task HandleValidSubmit()
+    {
+        ErrorMessage = "";
+
+        if (model.StartDate <= DateTime.Now || model.EndDate <= DateTime.Now)
+        {
+            ErrorMessage = "Dates have to be in the future";
+            return;
+        }
+
+        if ((model.EndDate - model.StartDate)?.TotalMinutes < 15)
+        {
+            ErrorMessage = "The end date must be at least 15 minutes after the start date";
+            return;
+        }
+
+        try
+        {
+            await PollService.CreatePollAsync(model);
+            Navigation.NavigateTo("/mypolls");
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = "Hiba történt: " + ex.Message;
+        }
+    }
+}

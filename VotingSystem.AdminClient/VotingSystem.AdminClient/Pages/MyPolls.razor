@@ -1,0 +1,103 @@
+﻿@page "/mypolls"
+@using VotingSystem.AdminClient.ViewModels
+@using VotingSystem.AdminClient.Services
+@inject IPollsService PollsService
+
+<h3 class="mb-4 text-center">My Created Polls</h3>
+
+@if (isLoading)
+{
+    <div class="text-center text-muted">Loading polls...</div>
+}
+else if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+else if (polls == null || !polls.Any())
+{
+    <div class="alert alert-info text-center">You have not created any polls yet.</div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        @foreach (var poll in polls)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">@poll.Question</h5>
+                        <p class="card-text mb-2 text-muted">
+                            <span><i class="bi bi-calendar-event"></i> <strong>Start:</strong> @poll.FormattedStart</span><br />
+                            <span><i class="bi bi-calendar-check"></i> <strong>End:</strong> @poll.FormattedEnd</span>
+                        </p>
+
+                        <button class="btn btn-outline-primary btn-sm mb-2"
+                                @onclick="() => ToggleDetails(poll.Id)">
+                            @(visiblePollIds.Contains(poll.Id) ? "Hide Details" : "Show Details")
+                        </button>
+
+                        @if (visiblePollIds.Contains(poll.Id))
+                        {
+                            <div class="mt-3">
+                                <h6>Answer Options</h6>
+                                <ul class="list-group list-group-sm mb-3">
+                                    @foreach (var option in poll.Options)
+                                    {
+                                        <li class="list-group-item">@option.OptionText</li>
+                                    }
+                                </ul>
+
+                                <h6>Voters</h6>
+                                @if (poll.Voters != null && poll.Voters.Any())
+                                {
+                                    <ul class="list-group list-group-sm">
+                                        @foreach (var voter in poll.Voters)
+                                        {
+                                            <li class="list-group-item">@voter.Email</li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <p class="text-muted">No votes yet.</p>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private List<PollViewModel>? polls;
+    private HashSet<int> visiblePollIds = new();
+    private bool isLoading = true;
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            polls = await PollsService.GetPollsCreatedByUserAsync();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Failed to load your polls.";
+            Console.Error.WriteLine(ex.Message);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void ToggleDetails(int pollId)
+    {
+        if (visiblePollIds.Contains(pollId))
+            visiblePollIds.Remove(pollId);
+        else
+            visiblePollIds.Add(pollId);
+    }
+}

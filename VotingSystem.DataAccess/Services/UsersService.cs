@@ -81,6 +81,8 @@ internal class UsersService : IUsersService
         if (!result.Succeeded)
             throw new InvalidOperationException($"Felhasználó létrehozása sikertelen: {result.Errors.First().Description}");
 
+        await _userManager.AddToRoleAsync(user, Role.Admin.ToString());
+
         var accessToken = await GenerateJwtTokenAsync(user);
 
         return (accessToken, user.RefreshToken.ToString(), user.Id);
@@ -129,17 +131,18 @@ internal class UsersService : IUsersService
 
     public async Task<User> GetUserByIdAsync(string id)
     {
+        Console.WriteLine($"[GETUSERBYIDASYNC] Beérkezett Id: {id}");
         var user = await _userManager.FindByIdAsync(id);
 
         if (user == null)
+        {
+            Console.WriteLine($"nem talalhato felhasznalo ezzel az idval {id}");
             throw new AccessViolationException("User not accessible");
-
-        if (!IsCurrentUserAdmin() && user.Id != GetCurrentUserId())
-            throw new AccessViolationException("User not accessible");
+        }
 
         return user;
     }
-
+    
     public List<Role> GetCurrentUserRoles()
     {
         var user = _httpContextAccessor.HttpContext?.User;
@@ -165,11 +168,13 @@ internal class UsersService : IUsersService
     {
         var claims = new List<Claim>
         {
-            new(JwtRegisteredClaimNames.Sub, user.Email!),
+            new("email", user.Email!),
             new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new("id", user.Id),
-            new("username", user.UserName!),
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
+            new Claim("username", user.UserName!)
         };
+
+        Console.WriteLine("Jwt user id:" + user.Id);
 
         var userRoles = await _userManager.GetRolesAsync(user);
         foreach (var userRole in userRoles)

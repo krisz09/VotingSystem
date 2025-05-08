@@ -2,27 +2,34 @@
 using Blazored.LocalStorage;
 using VotingSystem.Shared.Models;
 using System.Net.Http.Json;
-//using ELTE.Cinema.Blazor.WebAssembly.Exception;
+using VotingSystem.AdminClient.Exception;
 using VotingSystem.AdminClient.Infrastructure;
 using VotingSystem.AdminClient.ViewModels;
 
 namespace VotingSystem.AdminClient.Services
 {
-    public class AuthenticationService : IAuthenticationService
+    public class AuthenticationService : BaseService, IAuthenticationService
     {
         private readonly HttpClient _httpClient;
         private readonly ILocalStorageService _localStorageService;
         private readonly IMapper _mapper;
         private readonly IHttpRequestUtility _httpRequestUtility;
+        private AuthState _authState;
 
 
         public AuthenticationService(HttpClient httpClient, ILocalStorageService localStorageService,
-            IMapper mapper, IHttpRequestUtility httpRequestUtility)
+            IMapper mapper, IToastService toastService, IHttpRequestUtility httpRequestUtility, AuthState authState) : base(toastService)
         {
             _httpClient = httpClient;
             _mapper = mapper;
             _localStorageService = localStorageService;
             _httpRequestUtility = httpRequestUtility;
+            _authState = authState;
+        }
+
+        public async Task<string?> GetTokenAsync()
+        {
+            return await _localStorageService.GetItemAsStringAsync("AuthToken");
         }
 
         public async Task<bool> LoginAsync(LoginViewModel loginBindingViewModel)
@@ -48,6 +55,7 @@ namespace VotingSystem.AdminClient.Services
                 await _localStorageService.SetItemAsStringAsync("AuthToken", responseBody.AuthToken);
                 await _localStorageService.SetItemAsStringAsync("RefreshToken", responseBody.RefreshToken);
                 await SetCurrentUserNameAsync(responseBody.UserId);
+                _authState.SetLoginState(true);
 
                 return true;
             }
@@ -69,6 +77,8 @@ namespace VotingSystem.AdminClient.Services
 
             var keys = new List<string>() { "AuthToken", "RefreshToken", "UserName" };
             await _localStorageService.RemoveItemsAsync(keys);
+
+            _authState.SetLoginState(false);
         }
 
         public async Task<bool> TryAutoLoginAsync()
@@ -97,7 +107,18 @@ namespace VotingSystem.AdminClient.Services
         private async Task SetCurrentUserNameAsync(string currentUserId)
         {
             var response = await _httpRequestUtility.ExecuteGetHttpRequestAsync<UserResponseDto>($"users/{currentUserId}");
-            await _localStorageService.SetItemAsStringAsync("UserName", response.Response.Name);
+
+            var userName = response?.Response?.Name;
+
+            if (!string.IsNullOrWhiteSpace(userName))
+            {
+                await _localStorageService.SetItemAsStringAsync("UserName", userName);
+            }
+            else
+            {
+                ShowErrorMessage("A felhasználónév nem található az API válaszban.");
+            }
         }
+
     }
 }

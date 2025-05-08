@@ -33,6 +33,10 @@ namespace VotingSystem.AdminClient.Infrastructure
 
             services.AddScoped(_ => new HttpClient { BaseAddress = new Uri(config["ApiBaseUrl"]!) });
             services.AddScoped<IHttpRequestUtility, HttpRequestUtility>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IToastService, ToastService>();
+            services.AddScoped<IPollsService, PollsService>();
+            services.AddScoped<AuthState>();
 
             return services;
         }
