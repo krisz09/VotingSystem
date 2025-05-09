@@ -15,5 +15,15 @@ namespace VotingSystem.DataAccess.Services
         public Task<IReadOnlyCollection<Poll>> GetClosedPollsAsync(string? questionText, DateTime? startDate, DateTime? endDate);
         public Task<IReadOnlyCollection<Poll>> GetPollsCreatedByUser(string userid);
         public Task<bool> CreatePollAsync(Poll newPoll);
+
+        public Task<bool> UpdatePollAsync
+            (int pollId,
+            string question,
+            DateTime startDate,
+            DateTime endDate,
+            int minVotes,
+            int maxVotes,
+            List<string> options,
+            string userId);
     }
 }

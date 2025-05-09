@@ -35,4 +35,15 @@ public class PollsService : IPollsService
             await _httpRequestUtility.ExecutePostHttpRequestAsync<CreatePollRequestDto, PollResponseDto>("api/votes/create", dto);
             return true;
     }
+
+    public async Task<bool> UpdatePollAsync(PollViewModel vm)
+    {
+        var dto = _mapper.Map<UpdatePollRequestDto>(vm); // vagy PollViewModel-t küldesz, ha az elég
+
+        var result = await _httpRequestUtility.ExecutePutHttpRequestAsync<UpdatePollRequestDto ,PollResponseDto>(
+            $"api/votes/{vm.Id}", dto);
+
+        return true;
+    }
+
 }

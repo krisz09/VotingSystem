@@ -6,5 +6,6 @@ namespace VotingSystem.AdminClient.Services
     {
         public Task<List<PollViewModel>> GetPollsCreatedByUserAsync();
         public Task<bool> CreatePollAsync(CreatePollViewModel createPollViewModel);
+        public Task<bool> UpdatePollAsync(PollViewModel vm);
     }
 }

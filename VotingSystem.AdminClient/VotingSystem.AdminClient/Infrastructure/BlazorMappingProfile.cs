@@ -10,7 +10,10 @@ namespace VotingSystem.AdminClient.Infrastructure
         {
             CreateMap<LoginViewModel, LoginRequestDto>(MemberList.Source);
             CreateMap<PollResponseDto, PollViewModel>()
-                .ForMember(dest => dest.Options, opt => opt.MapFrom(src => src.PollOptions));
+                .ForMember(dest => dest.Options, opt => opt.MapFrom(src => src.PollOptions))
+                .ForMember(dest => dest.HasVotes,
+                       opt => opt.MapFrom(src => src.PollOptions.Any(po => po.VoteCount > 0)));
+
             CreateMap<PollOptionDto, PollOptionViewModel>();
             CreateMap<VoterDto, VoterViewModel>();
 

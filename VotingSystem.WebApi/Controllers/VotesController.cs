@@ -129,44 +129,66 @@ namespace VotingSystem.WebApi.Controllers
                     Console.WriteLine($"{claim.Type}: {claim.Value}");
                 }
 
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            Console.WriteLine("User ID from token: " + userId);
-            if (string.IsNullOrEmpty(userId))
-                return Unauthorized();
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                Console.WriteLine("User ID from token: " + userId);
+                if (string.IsNullOrEmpty(userId))
+                    return Unauthorized();
 
-
-            // + Debug: ellenőrizzük, hogy az EF látja-e ezt a userId-t
-            var userExists = await _context.Users.AnyAsync(u => u.Id == userId);
+                var userExists = await _context.Users.AnyAsync(u => u.Id == userId);
                 Console.WriteLine("user in db:" + userExists);
 
-            if (!userExists)
-            {
-                Console.WriteLine("User not found");
-                return BadRequest("User not found in AspNetUsers table.");
-            }
+                if (!userExists)
+                    return BadRequest("User not found in AspNetUsers table.");
 
+                if (dto.StartDate < DateTime.UtcNow || dto.EndDate < DateTime.UtcNow || (dto.EndDate - dto.StartDate).TotalMinutes < 15)
+                    return BadRequest("Invalid date range");
 
-            if (dto.StartDate < DateTime.UtcNow || dto.EndDate < DateTime.UtcNow || (dto.EndDate - dto.StartDate).TotalMinutes < 15)
-                return BadRequest("Invalid date range");
-
-            var poll = _mapper.Map<Poll>(dto);
-            poll.CreatedByUserId = userId;
+                var poll = _mapper.Map<Poll>(dto);
+                poll.CreatedByUserId = userId;
 
                 Console.WriteLine("Poll mapped success");
 
                 await _pollsService.CreatePollAsync(poll);
 
                 Console.WriteLine("Poll saved success");
-            return Ok(); // Optionally return the created poll DTO if needed
+
+                var responseDto = _mapper.Map<PollResponseDto>(poll);
+                return Ok(responseDto);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("Hiba történt a createPoll során: " + ex.Message);
-                return StatusCode(500, "server erro:" + ex.Message);
+                return StatusCode(500, "server error: " + ex.Message);
             }
         }
 
-        
+
+        [Authorize]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdatePoll(int id, [FromBody] UpdatePollRequestDto dto)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            var success = await _pollsService.UpdatePollAsync(
+                id,                            // comes from URL
+                dto.Question,
+                dto.StartDate,
+                dto.EndDate,
+                dto.MinVotes,
+                dto.MaxVotes,
+                dto.Options,
+                userId                         // from authenticated user
+            );
+
+            if (!success)
+                return BadRequest("Poll could not be updated.");
+
+            return Ok();
+        }
+
+
 
         [HttpPost("submit-vote")]
         public async Task<IActionResult> SubmitVote([FromBody] SubmitVoteRequestDto request)
@@ -205,9 +227,9 @@ namespace VotingSystem.WebApi.Controllers
 
             var resultDto = new PollResultDto
             {
-                Id = poll.Id,
+                Id = poll.Id,   
                 Question = poll.Question,
-                Options = poll.PollOptions.Select(option => new PollOptionResultDto
+                Options = poll.PollOptions.Select(option => new PollOptionDto
                 {
                     Id = option.Id,
                     OptionText = option.OptionText,
@@ -216,7 +238,10 @@ namespace VotingSystem.WebApi.Controllers
             };
 
             return Ok(resultDto);
+        
         }
+
+
 
         /* ----------- FOR TESTING
         [HttpGet("all")]

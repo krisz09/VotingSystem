@@ -144,6 +144,58 @@ namespace VotingSystem.DataAccess.Services
             return true;
         }
 
+        public async Task<bool> UpdatePollAsync(
+            int pollId,
+            string question,
+            DateTime startDate,
+            DateTime endDate,
+            int minVotes,
+            int maxVotes,
+            List<string> options,
+            string userId)
+        {
+            var poll = await _context.Polls
+                .Include(p => p.PollOptions)
+                    .ThenInclude(po => po.Votes) // 🔍 include votes via PollOption
+                .FirstOrDefaultAsync(p => p.Id == pollId && p.CreatedByUserId == userId);
+
+            if (poll == null)
+                return false;
+
+            // 🔄 check if any of the options have votes
+            var hasVotes = poll.PollOptions.Any(po => po.Votes.Any());
+            var now = DateTime.UtcNow;
+            var canEditAll = poll.StartDate > now && !hasVotes;
+
+            if (!canEditAll)
+            {
+                if (endDate <= poll.EndDate)
+                    return false;
+
+                poll.EndDate = endDate;
+            }
+            else
+            {
+                if (minVotes < 1 || maxVotes > options.Count || minVotes > maxVotes)
+                    return false;
+
+                poll.Question = question;
+                poll.StartDate = startDate;
+                poll.EndDate = endDate;
+                poll.Minvotes = minVotes;
+                poll.Maxvotes = maxVotes;
+
+                _context.PollOptions.RemoveRange(poll.PollOptions);
+                poll.PollOptions = options.Select(text => new PollOption
+                {
+                    OptionText = text,
+                    PollId = poll.Id
+                }).ToList();
+            }
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
 
 
     }

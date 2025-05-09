@@ -3,6 +3,7 @@
 @using VotingSystem.AdminClient.Services
 @inject IPollsService PollsService
 
+
 <h3 class="mb-4 text-center">My Created Polls</h3>
 
 @if (isLoading)
@@ -35,6 +36,14 @@ else
                                 @onclick="() => ToggleDetails(poll.Id)">
                             @(visiblePollIds.Contains(poll.Id) ? "Hide Details" : "Show Details")
                         </button>
+                        @if (poll.EndDate > DateTime.UtcNow)
+                        {
+                            <button class="btn btn-outline-secondary btn-sm ms-2"
+                                    @onclick="@(() => OpenEditModal(poll))">
+                                Edit
+                            </button>
+                        }
+
 
                         @if (visiblePollIds.Contains(poll.Id))
                         {
@@ -70,11 +79,20 @@ else
     </div>
 }
 
+
+
+<EditPollModal Poll="selectedPoll"
+               IsOpen="isEditModalOpen"
+               OnClose="@CloseEditModal"
+               OnSave="@SaveEditedPoll" />
+
 @code {
     private List<PollViewModel>? polls;
     private HashSet<int> visiblePollIds = new();
     private bool isLoading = true;
     private string? errorMessage;
+    private PollViewModel? selectedPoll;
+    private bool isEditModalOpen = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -99,5 +117,46 @@ else
             visiblePollIds.Remove(pollId);
         else
             visiblePollIds.Add(pollId);
+    }
+
+    private void OpenEditModal(PollViewModel poll)
+    {
+        selectedPoll = poll;
+        isEditModalOpen = true;
+    }
+
+    private Task CloseEditModal()
+    {
+        isEditModalOpen = false;
+        return Task.CompletedTask;
+    }
+
+    private async Task RefreshPolls()
+    {
+        isLoading = true;
+        errorMessage = null;
+
+        try
+        {
+            polls = await PollsService.GetPollsCreatedByUserAsync();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "Failed to refresh polls.";
+            Console.Error.WriteLine(ex.Message);
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged(); // force re-render in case needed
+        }
+    }
+
+
+    private async Task SaveEditedPoll(PollViewModel updatedPoll)
+    {
+        await PollsService.UpdatePollAsync(updatedPoll);
+        await RefreshPolls();
+        isEditModalOpen = false;
     }
 }

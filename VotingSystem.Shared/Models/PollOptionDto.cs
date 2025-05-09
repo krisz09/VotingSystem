@@ -10,5 +10,7 @@ namespace VotingSystem.Shared.Models
     {
         public int Id { get; set; }
         public string OptionText { get; set; } = null!;
+
+        public int VoteCount { get; set; }
     }
 }

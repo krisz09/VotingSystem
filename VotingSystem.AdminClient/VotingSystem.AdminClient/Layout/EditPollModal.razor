@@ -1,0 +1,128 @@
+﻿@using VotingSystem.AdminClient.ViewModels
+@inject IJSRuntime JS
+
+@if (IsOpen)
+{
+    <div class="modal show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Poll</h5>
+                    <button type="button" class="btn-close" @onclick="CloseModal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <EditForm Model="EditablePoll" OnValidSubmit="HandleSave">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <div class="mb-3">
+                            <label class="form-label">Question</label>
+                            <InputText class="form-control" @bind-Value="EditablePoll.Question" disabled="@(!CanEditAll)" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Start Date</label>
+                            <InputDate class="form-control" @bind-Value="EditablePoll.StartDate" disabled="@(!CanEditAll)" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">End Date</label>
+                            <InputDate class="form-control" @bind-Value="EditablePoll.EndDate" />
+                        </div>
+
+                        @if (CanEditAll)
+                        {
+                            <div class="mb-3">
+                                <label class="form-label">Options</label>
+
+                                @if (EditablePoll.Options != null && EditablePoll.Options.Count > 0)
+{
+    @for (int i = 0; i < EditablePoll.Options.Count; i++)
+    {
+        <div class="input-group mb-2">
+            <InputText class="form-control" 
+                       @bind-Value="EditablePoll.Options[i].OptionText" />
+            <button class="btn btn-outline-danger" type="button" @onclick="@(() => RemoveOption(i))">❌</button>
+        </div>
+    }
+}
+
+                                <button class="btn btn-outline-primary btn-sm" type="button" @onclick="AddOption">
+                                    ➕ Add Option
+                                </button>
+                            </div>
+                        }
+
+                        <div class="mt-3 text-end">
+                            <button class="btn btn-secondary me-2" type="button" @onclick="CloseModal">Cancel</button>
+                            <button class="btn btn-primary" type="submit">Save Changes</button>
+                        </div>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+@code {
+    [Parameter] public PollViewModel? Poll { get; set; }
+    [Parameter] public EventCallback<PollViewModel> OnSave { get; set; }
+    [Parameter] public bool IsOpen { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private PollViewModel EditablePoll = new();
+    private bool CanEditAll => Poll != null && Poll.StartDate > DateTime.UtcNow && !Poll.HasVotes;
+
+    protected override void OnParametersSet()
+    {
+        if (Poll != null)
+        {
+            EditablePoll = new PollViewModel
+            {
+                Id = Poll.Id,
+                Question = Poll.Question,
+                StartDate = Poll.StartDate,
+                EndDate = Poll.EndDate,
+                HasVotes = Poll.HasVotes,
+                Options = Poll.Options?.Select(o => new PollOptionViewModel
+{
+    Id = o.Id,
+    OptionText = o.OptionText ?? ""
+}).ToList() ?? new List<PollOptionViewModel>()
+
+            };
+            Console.WriteLine($"Options count: {Poll.Options?.Count}");
+        }
+        else
+        {
+            EditablePoll = new PollViewModel
+            {
+                Options = new List<PollOptionViewModel>()
+            };
+        }
+    }
+
+    private void AddOption()
+    {
+        EditablePoll.Options.Add(new PollOptionViewModel { OptionText = "" });
+    }
+
+    private void RemoveOption(int index)
+    {
+        if (index >= 0 && index < EditablePoll.Options.Count)
+        {
+            EditablePoll.Options.RemoveAt(index);
+        }
+    }
+
+    private async Task HandleSave()
+    {
+        await OnSave.InvokeAsync(EditablePoll);
+        await CloseModal();
+    }
+
+    private async Task CloseModal()
+    {
+        await OnClose.InvokeAsync();
+    }
+}

@@ -10,6 +10,6 @@ namespace VotingSystem.Shared.Models
     {
         public int Id { get; set; }
         public string Question { get; set; } = null!;
-        public List<PollOptionResultDto> Options { get; set; } = new();
+        public List<PollOptionDto> Options { get; set; } = new();
     }
 }

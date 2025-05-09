@@ -35,7 +35,10 @@ namespace VotingSystem.WebApi.Infrastructure
                     ));
 
             // Map PollOption to PollOptionDto
-            CreateMap<PollOption, PollOptionDto>();
+            CreateMap<PollOption, PollOptionDto>()
+                .ForMember(dest => dest.VoteCount, opt => opt.MapFrom(src => src.Votes.Count));
+
+
 
             CreateMap<CreatePollRequestDto, Poll>()
                 .ForMember(dest => dest.PollOptions, opt => opt.MapFrom(src =>
