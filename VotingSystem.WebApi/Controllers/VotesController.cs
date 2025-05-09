@@ -25,24 +25,34 @@ namespace VotingSystem.WebApi.Controllers
         }
 
         [Authorize]
-        [HttpGet]
+        [HttpGet("active")]
         public async Task<IActionResult> GetActivePolls()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // vagy ClaimTypes.NameIdentifier
-            Console.WriteLine("userId from JWT: " + userId);
-            if (userId == null) return Unauthorized();
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
 
-            var activePolls = await _pollsService.GetActivePollsWithVotesAsync(userId);
-            var pollsDto = _mapper.Map<List<PollResponseDto>>(activePolls);
+            var (polls, votedPollIds) = await _pollsService.GetActivePollsWithVotesAsync(userId);
 
-            var votedPollIds = await _pollsService.GetVotedPollIdsForUserAsync(userId);
-            foreach (var dto in pollsDto)
+            var result = polls.Select(p => new PollResponseDto
             {
-                dto.HasVoted = votedPollIds.Contains(dto.Id);
-            }
+                Id = p.Id,
+                Question = p.Question,
+                StartDate = p.StartDate,
+                EndDate = p.EndDate,
+                MinVotes = p.Minvotes,
+                MaxVotes = p.Maxvotes,
+                HasVoted = votedPollIds.Contains(p.Id),
+                PollOptions = p.PollOptions.Select(opt => new PollOptionDto
+                {
+                    Id = opt.Id,
+                    OptionText = opt.OptionText
+                }).ToList()
+            }).ToList();
 
-            return Ok(pollsDto);
+            return Ok(result);
         }
+
 
         [Authorize]
         [HttpGet("closed-polls")]
@@ -156,24 +166,29 @@ namespace VotingSystem.WebApi.Controllers
             }
         }
 
-
+        
 
         [HttpPost("submit-vote")]
         public async Task<IActionResult> SubmitVote([FromBody] SubmitVoteRequestDto request)
         {
-            if (request.PollOptionId <= 0 || string.IsNullOrEmpty(request.UserId))
+            // Alap validáció
+            if (request.PollOptionIds == null || request.PollOptionIds.Count == 0 || string.IsNullOrWhiteSpace(request.UserId))
             {
                 return BadRequest("Invalid vote submission.");
             }
 
-            var result = await _pollsService.SubmitVoteAsync(request.PollOptionId, request.UserId);
+            // Szolgáltatás meghívása
+            var result = await _pollsService.SubmitVotesAsync(request.PollOptionIds, request.UserId);
+
             if (result)
             {
                 return Ok("Vote submitted successfully.");
             }
 
-            return BadRequest("Failed to submit vote.");
+            return BadRequest("Failed to submit vote. Either already voted, poll ended, or invalid option selection.");
         }
+
+
 
         [HttpGet("{pollId}/results")]
         public async Task<IActionResult> GetPollResults(int pollId)
@@ -212,88 +227,6 @@ namespace VotingSystem.WebApi.Controllers
             return Ok(mapped);
         }
         */
-
-        [HttpPost("create-test-polls")]
-        public async Task<IActionResult> CreateTestPolls()
-        {
-            var user = await _context.Users.FirstOrDefaultAsync();
-            if (user == null)
-            {
-                return BadRequest("No users found in the database.");
-            }
-
-            if (!_context.Polls.Any())
-            {
-                var now = DateTime.UtcNow;
-
-                var polls = new List<Poll>
-        {
-            // ✅ Active Poll
-            new Poll
-            {
-                Question = "What is your favorite color?",
-                StartDate = now.AddDays(-1),
-                EndDate = now.AddDays(5),
-                CreatedByUserId = user.Id,
-                PollOptions = new List<PollOption>
-                {
-                    new PollOption { OptionText = "Red" },
-                    new PollOption { OptionText = "Blue" },
-                    new PollOption { OptionText = "Green" }
-                }
-            },
-            new Poll
-            {
-                Question = "What is your programming language?",
-                StartDate = now.AddDays(-1),
-                EndDate = now.AddDays(5),
-                CreatedByUserId = user.Id,
-                PollOptions = new List<PollOption>
-                {
-                    new PollOption { OptionText = "C#" },
-                    new PollOption { OptionText = "Java" },
-                    new PollOption { OptionText = "C++" }
-                }
-            },
-
-            new Poll
-            {
-                Question = "Which framework do you prefer?",
-                StartDate = now.AddDays(-10),
-                EndDate = now.AddDays(-1),
-                CreatedByUserId = user.Id,
-                PollOptions = new List<PollOption>
-                {
-                    new PollOption { OptionText = "React" },
-                    new PollOption { OptionText = "Angular" },
-                    new PollOption { OptionText = "Vue" }
-                }
-            },
-
-            // ✅ Another Closed Poll
-            new Poll
-            {
-                Question = "What is your favorite backend language?",
-                StartDate = now.AddDays(-7),
-                EndDate = now.AddDays(-2),
-                CreatedByUserId = user.Id,
-                PollOptions = new List<PollOption>
-                {
-                    new PollOption { OptionText = "C#" },
-                    new PollOption { OptionText = "Java" },
-                    new PollOption { OptionText = "Node.js" }
-                }
-            }
-        };
-
-                _context.Polls.AddRange(polls);
-                await _context.SaveChangesAsync();
-
-                return Ok("Test polls (active and closed) created.");
-            }
-
-            return Ok("Polls already exist — no new test polls created.");
-        }
 
         [HttpDelete("delete-all")]
         public async Task<IActionResult> DeleteAllPolls()

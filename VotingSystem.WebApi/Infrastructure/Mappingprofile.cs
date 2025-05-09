@@ -38,13 +38,17 @@ namespace VotingSystem.WebApi.Infrastructure
             CreateMap<PollOption, PollOptionDto>();
 
             CreateMap<CreatePollRequestDto, Poll>()
-    .ForMember(dest => dest.PollOptions, opt => opt.MapFrom(src =>
-        src.Options.Select(opt => new PollOption
-        {
-            OptionText = opt
-        }).ToList()));
+                .ForMember(dest => dest.PollOptions, opt => opt.MapFrom(src =>
+                    src.Options.Select(opt => new PollOption
+                    {
+                        OptionText = opt
+                    }).ToList()));
 
+
+            CreateMap<User, VoterDto>()
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email));
 
         }
+
     }
 }

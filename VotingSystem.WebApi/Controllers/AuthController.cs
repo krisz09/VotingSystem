@@ -17,6 +17,7 @@ namespace VotingSystem.WebApi.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly IUsersService _usersService;
+    private readonly IUserAccountService _userAccountService;
     private readonly IMapper _mapper;
 
     /// <summary>
@@ -24,10 +25,11 @@ public class UsersController : ControllerBase
     /// </summary>
     /// <param name="mapper"></param>
     /// <param name="usersService"></param>
-    public UsersController(IMapper mapper, IUsersService usersService)
+    public UsersController(IMapper mapper, IUsersService usersService, IUserAccountService userAccountService)
     {
         _mapper = mapper;
         _usersService = usersService;
+        _userAccountService = userAccountService;
     }
 
     /// <summary>
@@ -157,4 +159,22 @@ public class UsersController : ControllerBase
 
         return Ok(loginResponseDto);
     }
+
+    [HttpPost("forgot-password")]
+    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequestDto dto)
+    {
+        var success = await _userAccountService.SendResetPasswordLinkAsync(dto.Email);
+        return Ok(new { success });
+    }
+
+    [HttpPost("reset-password")]
+    public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequestDto dto)
+    {
+        var success = await _userAccountService.ResetPasswordAsync(dto.Email, dto.Token, dto.NewPassword);
+        if (!success)
+            return BadRequest("Invalid token or user not found");
+
+        return Ok("Password has been reset");
+    }
+
 }

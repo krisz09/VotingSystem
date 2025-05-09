@@ -11,6 +11,8 @@ export interface PollResponseDto {
     startDate: string;
     endDate: string;
     createdByUserId: string;
+    minVotes: number;
+    maxVotes: number;
     pollOptions: PollOptionDto[];
     hasVoted: boolean;
 }
@@ -36,7 +38,7 @@ const API_URL = "https://localhost:7294/api/votes";
 
 // Function to get active polls
 export async function getActivePolls(): Promise<PollResponseDto[]> {
-    const response = await authFetch(`${API_URL}`);
+    const response = await authFetch(`${API_URL}/active`);
     return await response.json();
 }
 
@@ -87,16 +89,42 @@ export async function getPollResults(pollId: number): Promise<PollResultDto> {
 }
 
 
-export async function submitVote(pollOptionId: number, userId: string): Promise<void> {
+export async function submitVote(pollOptionIds: number[], userId: string): Promise<void> {
     const response = await authFetch(`${API_URL}/submit-vote`, {
         method: "POST",
-        body: JSON.stringify({ pollOptionId, userId }),
+        body: JSON.stringify({ pollOptionIds, userId }),
     });
 
     if (!response.ok) {
         throw new Error("Failed to submit vote.");
     }
 }
+
+export async function forgotPassword(email: string): Promise<void> {
+    const response = await fetch("https://localhost:7294/users/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to send reset password email.");
+    }
+}
+
+export async function resetPassword(email: string, token: string, newPassword: string): Promise<void> {
+    const response = await fetch("https://localhost:7294/users/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, token, newPassword }),
+    });
+
+    if (!response.ok) {
+        throw new Error("Failed to reset password.");
+    }
+}
+
+
 
 export const getClosedPolls = async (
     questionText: string,
@@ -113,3 +141,4 @@ export const getClosedPolls = async (
     const response = await authFetch(`${API_URL}/closed-polls?${queryString}`);
     return await response.json();
 };
+

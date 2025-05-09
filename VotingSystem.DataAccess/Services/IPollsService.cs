@@ -8,9 +8,9 @@ namespace VotingSystem.DataAccess.Services
 {
     public interface IPollsService
     {
-        public Task<IReadOnlyCollection<Poll>> GetActivePollsWithVotesAsync(string userId);
+        public Task<(List<Poll> Polls, List<int> VotedPollIds)> GetActivePollsWithVotesAsync(string userId);
         public Task<List<int>> GetVotedPollIdsForUserAsync(string userId);
-        public Task<bool> SubmitVoteAsync(int pollOptionId, string userId);
+        public Task<bool> SubmitVotesAsync(List<int> pollOptionIds, string userId);
         public Task<IReadOnlyCollection<Poll>> GetAllPollsAsync();
         public Task<IReadOnlyCollection<Poll>> GetClosedPollsAsync(string? questionText, DateTime? startDate, DateTime? endDate);
         public Task<IReadOnlyCollection<Poll>> GetPollsCreatedByUser(string userid);

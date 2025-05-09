@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace VotingSystem.Shared.Models
 {
-    public class SubmitVoteRequestDto
+    public class ForgotPasswordRequestDto
     {
-        public List<int> PollOptionIds { get; set; } = new();
-        public string UserId { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
     }
 }

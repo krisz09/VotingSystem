@@ -15,22 +15,33 @@ const Navbar: React.FC = () => {
         <div className="navbar">
             <div className="title">Voting System</div>
 
-            {/* ✅ Show only when logged in */}
-            {isLoggedIn && (
-                <div className="navbar-buttons">
-                    <Link to="/active-polls">
-                        <button className="navbar-button">Active Polls</button>
-                    </Link>
+            <div className="navbar-buttons">
+                {isLoggedIn ? (
+                    <>
+                        <Link to="/active-polls">
+                            <button className="navbar-button">Active Polls</button>
+                        </Link>
 
-                    <Link to="/closed-polls">
-                        <button className="navbar-button">Closed Polls</button>
-                    </Link>
+                        <Link to="/closed-polls">
+                            <button className="navbar-button">Closed Polls</button>
+                        </Link>
 
-                    <button className="logout-button" onClick={handleLogout}>
-                        Logout
-                    </button>
-                </div>
-            )}
+                        <button className="logout-button" onClick={handleLogout}>
+                            Logout
+                        </button>
+                    </>
+                ) : (
+                    <>
+                        <Link to="/login">
+                            <button className="navbar-button">Login</button>
+                        </Link>
+
+                        <Link to="/register">
+                            <button className="navbar-button">Register</button>
+                        </Link>
+                    </>
+                )}
+            </div>
         </div>
     );
 };

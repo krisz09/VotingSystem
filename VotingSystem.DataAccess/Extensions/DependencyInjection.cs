@@ -28,6 +28,7 @@ namespace VotingSystem.DataAccess.Extensions
             services.AddScoped<IUsersService, UsersService>();
 
 
+
             return services;
         }
 

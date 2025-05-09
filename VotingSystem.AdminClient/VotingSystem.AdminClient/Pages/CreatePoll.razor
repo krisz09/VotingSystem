@@ -29,6 +29,16 @@
                             <input type="datetime-local" class="form-control" @bind="model.EndDate" />
                         </div>
 
+                        <div class="mb-3">
+                            <label class="form-label">Minimum selectable options</label>
+                            <InputNumber class="form-control" @bind-Value="model.minVotes" min="1" max="@model.Options.Count" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Maximum selectable options</label>
+                            <InputNumber class="form-control" @bind-Value="model.maxVotes" min="1" max="@model.Options.Count" />
+                        </div>
+
 
                         <div class="mb-3">
                             <label class="form-label">Vote options</label>
@@ -87,6 +97,39 @@
             ErrorMessage = "The end date must be at least 15 minutes after the start date";
             return;
         }
+
+        if (model.minVotes < 1)
+        {
+            ErrorMessage = "Minimum selectable options must be at least 1.";
+            return;
+        }
+
+        if (model.maxVotes > model.Options.Count)
+        {
+            ErrorMessage = "Maximum selectable options cannot be more than the number of vote options.";
+            return;
+        }
+
+        if (model.minVotes > model.maxVotes)
+        {
+            ErrorMessage = "Minimum selectable options cannot be greater than maximum.";
+            return;
+        }
+
+        if (model.maxVotes <= 0)
+        {
+            ErrorMessage = "Maximum selectable options must be greater than 0.";
+            return;
+        }
+
+
+        if (model.StartDate.HasValue)
+            model.StartDate = model.StartDate.Value.ToUniversalTime();
+
+        if (model.EndDate.HasValue)
+            model.EndDate = model.EndDate.Value.ToUniversalTime();
+
+        Console.WriteLine(model.maxVotes);
 
         try
         {

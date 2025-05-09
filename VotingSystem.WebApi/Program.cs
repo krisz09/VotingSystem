@@ -7,6 +7,7 @@ using System.Text;
 using VotingSystem.DataAccess;
 using VotingSystem.DataAccess.Config;
 using VotingSystem.DataAccess.Extensions;
+using VotingSystem.WebApi.Infrastructure;
 
 namespace VotingSystem.WebApi
 {
@@ -35,6 +36,8 @@ namespace VotingSystem.WebApi
             });
             builder.Services.AddControllers();
             builder.Services.AddDataAccess(builder.Configuration);
+            builder.Services.AddScoped<IEmailService, EmailService>();
+            builder.Services.AddScoped<IUserAccountService, UserAccountService>();
             builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("Jwt"));
             builder.Services.ConfigureDatabaseAndIdentity(builder.Configuration);
             builder.Services.ConfigureJwtAuthentication(builder.Configuration);

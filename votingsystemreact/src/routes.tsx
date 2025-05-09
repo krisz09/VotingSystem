@@ -6,6 +6,8 @@ import Register from './components/Register';
 import ActivePollsPage from "./components/ActivePollsPage";
 import ClosedPollsList from './components/ClosedPollsList';
 import Navbar from './components/Navbar';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 
 const AppRoutes: React.FC = () => (
     <>
@@ -14,11 +16,11 @@ const AppRoutes: React.FC = () => (
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-
-
             <Route path="/active-polls" element={<ActivePollsPage />} />
-
             <Route path="/closed-polls" element={<ClosedPollsList />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+
         </Routes>
     </>
 );

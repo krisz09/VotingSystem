@@ -10,26 +10,45 @@ interface Props {
 
 const PollDetails: React.FC<Props> = ({ poll, onBack }) => {
     const { userId } = useAuth();
-    const [selectedOptionId, setSelectedOptionId] = useState<number | null>(null);
+    const [selectedOptionIds, setSelectedOptionIds] = useState<number[]>([]);
     const [message, setMessage] = useState<string | null>(null);
     const [hasVoted, setHasVoted] = useState<boolean>(poll.hasVoted);
     const [submitting, setSubmitting] = useState<boolean>(false);
 
+    const toggleOption = (optionId: number) => {
+        setSelectedOptionIds(prev =>
+            prev.includes(optionId)
+                ? prev.filter(id => id !== optionId)
+                : [...prev, optionId]
+        );
+    };
+
     const handleVote = async () => {
-        if (selectedOptionId !== null && userId) {
-            try {
-                setSubmitting(true);
-                await submitVote(selectedOptionId, userId);
-                setMessage("✅ Vote submitted successfully!");
-                setHasVoted(true);
-            } catch (error) {
-                console.error("Error submitting vote:", error);
-                setMessage("❌ There was an error submitting your vote.");
-            } finally {
-                setSubmitting(false);
-            }
-        } else {
-            setMessage("❗ Please select an option before submitting.");
+        console.log("userId:", userId);
+
+        if (!userId) {
+            setMessage("❗ You must be logged in to vote.");
+            return;
+        }
+
+        const min = poll.minVotes ?? 1;
+        const max = poll.maxVotes;
+
+        if (selectedOptionIds.length < min || selectedOptionIds.length > max) {
+            setMessage(`❗ Please select between ${min} and ${max} options.`);
+            return;
+        }
+
+        try {
+            setSubmitting(true);
+            await submitVote(selectedOptionIds, userId); // Ezt a backendhez is hozzá kell igazítani!
+            setMessage("✅ Vote submitted successfully!");
+            setHasVoted(true);
+        } catch (error) {
+            console.error("Error submitting vote:", error);
+            setMessage("❌ There was an error submitting your vote.");
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -37,17 +56,20 @@ const PollDetails: React.FC<Props> = ({ poll, onBack }) => {
         <div className="card">
             <h2>{poll.question}</h2>
 
+            <p>
+                Select between <strong>{poll.minVotes}</strong> and <strong>{poll.maxVotes}</strong> options.
+            </p>
+
             <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
                 {poll.pollOptions.map(option => (
                     <li key={option.id} style={{ marginBottom: "10px" }}>
                         <label>
                             <input
-                                type="radio"
-                                name="pollOption"
+                                type="checkbox"
                                 value={option.id}
                                 disabled={hasVoted}
-                                checked={selectedOptionId === option.id}
-                                onChange={() => setSelectedOptionId(option.id)}
+                                checked={selectedOptionIds.includes(option.id)}
+                                onChange={() => toggleOption(option.id)}
                             />
                             {" "}{option.optionText}
                         </label>
@@ -56,7 +78,10 @@ const PollDetails: React.FC<Props> = ({ poll, onBack }) => {
             </ul>
 
             {!hasVoted && (
-                <button onClick={handleVote} disabled={selectedOptionId === null || submitting}>
+                <button
+                    onClick={handleVote}
+                    disabled={selectedOptionIds.length === 0 || submitting}
+                >
                     {submitting ? "Submitting..." : "Submit Vote"}
                 </button>
             )}

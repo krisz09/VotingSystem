@@ -28,22 +28,11 @@ public class PollsService : IPollsService
             Question = vm.Question,
             StartDate = vm.StartDate!.Value,
             EndDate = vm.EndDate!.Value,
+            MinVotes = vm.minVotes,
+            MaxVotes = vm.maxVotes,
             Options = vm.Options.Where(opt => !string.IsNullOrWhiteSpace(opt)).ToList()
         };
-
-        try
-        {
             await _httpRequestUtility.ExecutePostHttpRequestAsync<CreatePollRequestDto, PollResponseDto>("api/votes/create", dto);
             return true;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Problemo");
-            return false;
-        }
     }
-
-
-
-
 }

@@ -13,6 +13,8 @@ namespace VotingSystem.AdminClient.Infrastructure
                 .ForMember(dest => dest.Options, opt => opt.MapFrom(src => src.PollOptions));
             CreateMap<PollOptionDto, PollOptionViewModel>();
             CreateMap<VoterDto, VoterViewModel>();
+
+
         }
     }
 }

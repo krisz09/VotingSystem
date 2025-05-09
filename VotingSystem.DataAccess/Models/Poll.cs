@@ -25,6 +25,10 @@ namespace VotingSystem.DataAccess {
         [ForeignKey("User")]
         public string CreatedByUserId { get; set; }
         public virtual User CreatedByUser { get; set; } = null!;
+         
+        public int Minvotes { get; set; } = 1;
+        public int Maxvotes { get; set; }
+
         public virtual ICollection<PollOption> PollOptions { get; set; } = new List<PollOption>();
         
     }

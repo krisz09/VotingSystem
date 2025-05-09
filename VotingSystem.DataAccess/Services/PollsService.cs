@@ -23,11 +23,11 @@ namespace VotingSystem.DataAccess.Services
                 .ToListAsync();
         }
 
-        public async Task<IReadOnlyCollection<Poll>> GetActivePollsWithVotesAsync(string userId)
+        public async Task<(List<Poll> Polls, List<int> VotedPollIds)> GetActivePollsWithVotesAsync(string userId)
         {
             var polls = await _context.Polls
                 .Include(p => p.PollOptions)
-                .Where(p => p.StartDate <= DateTime.UtcNow && p.EndDate >= DateTime.UtcNow)
+                .Where(p => p.StartDate <= DateTime.Now && p.EndDate >= DateTime.Now)
                 .ToListAsync();
 
             var votedPollIds = await _context.Votes
@@ -36,8 +36,9 @@ namespace VotingSystem.DataAccess.Services
                 .Distinct()
                 .ToListAsync();
 
-            return polls;
+            return (polls, votedPollIds);
         }
+
 
         public async Task<IReadOnlyCollection<Poll>> GetClosedPollsAsync(string? questionText, DateTime? startDate, DateTime? endDate)
         {
@@ -94,29 +95,55 @@ namespace VotingSystem.DataAccess.Services
 
 
 
-        public async Task<bool> SubmitVoteAsync(int pollOptionId, string userId)
+        public async Task<bool> SubmitVotesAsync(List<int> pollOptionIds, string userId)
         {
-            var pollOption = await _context.PollOptions
-                .Include(po => po.Poll)
-                .FirstOrDefaultAsync(po => po.Id == pollOptionId);
-
-            if (pollOption == null || pollOption.Poll.EndDate < DateTime.Now)
-            {
+            if (pollOptionIds == null || !pollOptionIds.Any())
                 return false;
-            }
 
-            var vote = new Vote
+            // Az első opció alapján lekérjük a szavazáshoz tartozó Poll-t (feltételezzük, hogy az összes opció ugyanahhoz tartozik)
+            var firstOption = await _context.PollOptions
+                .Include(po => po.Poll)
+                .FirstOrDefaultAsync(po => po.Id == pollOptionIds[0]);
+
+            if (firstOption == null || firstOption.Poll.EndDate < DateTime.Now)
+                return false;
+
+            var poll = firstOption.Poll;
+
+            // Ellenőrzés: minden opció ehhez a Poll-hoz tartozik-e
+            var validOptionIds = await _context.PollOptions
+                .Where(po => po.PollId == poll.Id)
+                .Select(po => po.Id)
+                .ToListAsync();
+
+            if (!pollOptionIds.All(id => validOptionIds.Contains(id)))
+                return false;
+
+            // Ellenőrzés: felhasználó már szavazott-e ebben a szavazásban
+            var hasAlreadyVoted = await _context.Votes
+                .AnyAsync(v => v.UserId == userId && validOptionIds.Contains(v.PollOptionId));
+
+            if (hasAlreadyVoted)
+                return false;
+
+            // Min/Max validáció
+            if (pollOptionIds.Count < poll.Minvotes || pollOptionIds.Count > poll.Maxvotes)
+                return false;
+
+            // Szavazatok létrehozása
+            var votes = pollOptionIds.Select(optionId => new Vote
             {
-                PollOptionId = pollOptionId,
+                PollOptionId = optionId,
                 UserId = userId,
                 VotedAt = DateTime.Now
-            };
+            });
 
-            _context.Votes.Add(vote);
+            _context.Votes.AddRange(votes);
             await _context.SaveChangesAsync();
 
             return true;
         }
+
 
 
     }

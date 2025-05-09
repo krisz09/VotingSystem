@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext, ReactNode } from "react";
+﻿import React, { createContext, useState, useEffect, useContext, ReactNode } from "react";
 import { jwtDecode } from "jwt-decode";
 
 interface AuthContextType {
@@ -12,7 +12,6 @@ interface AuthContextType {
 interface JwtPayload {
     sub: string; // user ID
     email?: string;
-    // Add other fields if needed
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -27,31 +26,37 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [token, setToken] = useState<string | null>(null);
-    const isLoggedIn = !!token;
     const [userId, setUserId] = useState<string | null>(null);
+    const [isInitialized, setIsInitialized] = useState(false); // 👈 új flag
 
+    const isLoggedIn = !!token;
+
+    // On mount: try loading from localStorage
     useEffect(() => {
         const savedToken = localStorage.getItem("token");
         if (savedToken) {
             try {
-                const decoded = jwtDecode<JwtPayload>(savedToken);
+                const decoded = jwtDecode<any>(savedToken);
+                const userId = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
                 setToken(savedToken);
-                setUserId(decoded.sub);
+                setUserId(userId);
             } catch (error) {
-                console.error("Hib�s token:", error);
+                console.error("Hibás token a betöltéskor:", error);
                 logout();
             }
         }
+        setIsInitialized(true);
     }, []);
 
     const login = (newToken: string) => {
         try {
-            const decoded = jwtDecode<JwtPayload>(newToken);
+            const decoded = jwtDecode<any>(newToken);
+            const userId = decoded["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
             localStorage.setItem("token", newToken);
             setToken(newToken);
-            setUserId(decoded.sub);
+            setUserId(userId);
         } catch (error) {
-            console.error("Hib�s token a login sor�n:", error);
+            console.error("Hibás token a login során:", error);
         }
     };
 
@@ -63,6 +68,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setUserId(null);
     };
 
+    // While loading, avoid flashing unauthenticated state
+    if (!isInitialized) {
+        return <div>🔄 Betöltés...</div>; // vagy null
+    }
 
     return (
         <AuthContext.Provider value={{ isLoggedIn, token, userId, login, logout }}>

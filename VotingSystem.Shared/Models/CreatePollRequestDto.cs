@@ -13,6 +13,10 @@ namespace VotingSystem.Shared.Models
         [Required(ErrorMessage = "End date is required")]
         public DateTime EndDate { get; set; }
 
+        public int MinVotes { get; set; }
+
+        public int MaxVotes { get; set; }
+
         [MinLength(2, ErrorMessage = "At least two options are required")]
         public List<string> Options { get; set; } = new();
     }

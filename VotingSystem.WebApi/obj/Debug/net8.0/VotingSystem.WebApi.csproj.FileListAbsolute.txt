@@ -294,3 +294,8 @@ C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\
 C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\VotingSystem.WebApi.pdb
 C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\VotingSystem.WebApi.genruntimeconfig.cache
 C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\obj\Debug\net8.0\ref\VotingSystem.WebApi.dll
+C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
+C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\bin\Debug\net8.0\MailKit.dll
+C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\bin\Debug\net8.0\MimeKit.dll
+C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\bin\Debug\net8.0\System.Security.Cryptography.Pkcs.dll
+C:\Egyetem\4.félév\CNET\Beadandó\VotingSystem.WebApi\VotingSystem.WebApi\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll
