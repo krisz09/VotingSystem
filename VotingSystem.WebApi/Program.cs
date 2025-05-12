@@ -13,7 +13,7 @@ namespace VotingSystem.WebApi
 {
     public class Program
     {
-        public static async Task Main(string[] args)
+        public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -82,9 +82,9 @@ namespace VotingSystem.WebApi
             using (var scope = app.Services.CreateScope())
             {
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                if(!await roleManager.RoleExistsAsync("Admin"))
+                if(!roleManager.RoleExistsAsync("Admin").Result)
                 {
-                    await roleManager.CreateAsync(new IdentityRole("Admin"));
+                    roleManager.CreateAsync(new IdentityRole("Admin")).Wait();
                 }
             }
 
@@ -106,7 +106,7 @@ namespace VotingSystem.WebApi
 
             app.MapControllers();
 
-            await app.RunAsync();
+            app.Run();
         }
     }
 }

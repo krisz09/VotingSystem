@@ -16,6 +16,10 @@ namespace VotingSystem.AdminClient.Infrastructure
 
             CreateMap<PollOptionDto, PollOptionViewModel>();
             CreateMap<VoterDto, VoterViewModel>();
+            CreateMap<PollViewModel, UpdatePollRequestDto>()
+                .ForMember(dest => dest.Options, opt => opt.MapFrom(src =>
+                    src.Options.Select(o => o.OptionText).ToList()));
+
 
 
         }

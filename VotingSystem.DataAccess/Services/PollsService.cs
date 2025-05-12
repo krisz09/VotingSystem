@@ -39,6 +39,15 @@ namespace VotingSystem.DataAccess.Services
             return (polls, votedPollIds);
         }
 
+        public async Task<Poll?> GetPollByIdAsync(int id)
+        {
+            return await _context.Polls
+                .Include(p => p.PollOptions)
+                    .ThenInclude(po => po.Votes)
+                .ThenInclude(v => v.User)
+                .FirstOrDefaultAsync(p => p.Id == id);
+        }
+
 
         public async Task<IReadOnlyCollection<Poll>> GetClosedPollsAsync(string? questionText, DateTime? startDate, DateTime? endDate)
         {

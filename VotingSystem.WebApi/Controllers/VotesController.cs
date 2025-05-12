@@ -185,7 +185,15 @@ namespace VotingSystem.WebApi.Controllers
             if (!success)
                 return BadRequest("Poll could not be updated.");
 
-            return Ok();
+
+
+            var updatedPoll = await _pollsService.GetPollByIdAsync(id);
+
+            if (updatedPoll == null)
+                return NotFound();
+            var dtoResponse = _mapper.Map<PollResponseDto>(updatedPoll);
+
+            return Ok(dtoResponse);
         }
 
 

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "VotingSystem.IntegrationTest": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\Egyetem\\4.félév\\CNET\\Beadandó\\VotingSystem.WebApi\\VotingSystem.WebApi\\bin\\Debug\\net8.0"
+    }
+  }
+}

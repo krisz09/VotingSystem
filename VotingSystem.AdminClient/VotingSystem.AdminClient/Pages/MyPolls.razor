@@ -121,9 +121,11 @@ else
 
     private void OpenEditModal(PollViewModel poll)
     {
+        Console.WriteLine($"OpenEditModal called for Poll ID: {poll.Id}, Question: {poll.Question}, Options Count: {poll.Options?.Count ?? 0}");
         selectedPoll = poll;
         isEditModalOpen = true;
     }
+
 
     private Task CloseEditModal()
     {
