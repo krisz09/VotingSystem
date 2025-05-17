@@ -51,13 +51,13 @@ internal class UsersService : IUsersService
     {
         var user = await _userManager.FindByEmailAsync(email);
         if (user == null)
-            throw new AccessViolationException("Email or password is invalid");
+            throw new UnauthorizedAccessException("Email or password is invalid");
 
         var result = await _signInManager.PasswordSignInAsync(user.UserName!, password, false, true);
         if (result.IsLockedOut)
-            throw new AccessViolationException("Too many failed attempt. User is locked out");
+            throw new UnauthorizedAccessException("Too many failed attempts. User is locked out");
         if (!result.Succeeded)
-            throw new AccessViolationException("Email or password is invalid");
+            throw new UnauthorizedAccessException("Email or password is invalid");
 
         var accessToken = await GenerateJwtTokenAsync(user);
 
@@ -65,28 +65,28 @@ internal class UsersService : IUsersService
     }
 
     public async Task<(string authToken, string refreshToken, string userId)> RegisterAsync(string email, string password)
+{
+    var existingUser = await _userManager.FindByEmailAsync(email);
+    if (existingUser != null)
+        throw new InvalidOperationException("User already exists."); // Updated message
+
+    var user = new User
     {
-        var existingUser = await _userManager.FindByEmailAsync(email);
-        if (existingUser != null)
-            throw new InvalidOperationException("A felhasználó már létezik.");
+        Email = email,
+        UserName = email,
+        RefreshToken = Guid.NewGuid()
+    };
 
-        var user = new User
-        {
-            Email = email,
-            UserName = email,
-            RefreshToken = Guid.NewGuid()
-        };
+    var result = await _userManager.CreateAsync(user, password);
+    if (!result.Succeeded)
+        throw new InvalidOperationException($"User creation failed: {result.Errors.First().Description}");
 
-        var result = await _userManager.CreateAsync(user, password);
-        if (!result.Succeeded)
-            throw new InvalidOperationException($"Felhasználó létrehozása sikertelen: {result.Errors.First().Description}");
+    await _userManager.AddToRoleAsync(user, Role.Admin.ToString());
 
-        await _userManager.AddToRoleAsync(user, Role.Admin.ToString());
+    var accessToken = await GenerateJwtTokenAsync(user);
 
-        var accessToken = await GenerateJwtTokenAsync(user);
-
-        return (accessToken, user.RefreshToken.ToString(), user.Id);
-    }
+    return (accessToken, user.RefreshToken.ToString(), user.Id);
+}
 
     public async Task<(string authToken, string refreshToken, string userId)> RedeemRefreshTokenAsync(string refreshToken)
     {

@@ -89,7 +89,7 @@ else
 @code {
     private List<PollViewModel>? polls;
     private HashSet<int> visiblePollIds = new();
-    private bool isLoading = true;
+    internal bool isLoading = true;
     private string? errorMessage;
     private PollViewModel? selectedPoll;
     private bool isEditModalOpen = false;

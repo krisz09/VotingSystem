@@ -1,0 +1,137 @@
+@startuml "VotingSystem Data Model and Services"
+
+' Data Models
+class Poll {
+  +int Id
+  +string Question
+  +DateTime StartDate
+  +DateTime EndDate
+  +string CreatedByUserId
+  +int Minvotes
+  +int Maxvotes
+  +ICollection<PollOption> PollOptions
+}
+
+class User {
+  +string Id
+  +string Email
+  +string UserName
+  +string PasswordHash
+  +Guid? RefreshToken
+  +ICollection<Vote> Votes
+}
+
+class PollOption {
+  +int Id
+  +string OptionText
+  +int PollId
+  +Poll Poll
+  +ICollection<Vote> Votes
+}
+
+class Vote {
+  +int Id
+  +string UserId
+  +int PollOptionId
+  +DateTime VotedAt
+  +User User
+  +PollOption PollOption
+}
+
+enum Role {
+  Admin
+}
+
+' Service Interfaces
+interface IPollsService {
+  +Task<(List<Poll>, List<int>)> GetActivePollsWithVotesAsync(string userId)
+  +Task<List<int>> GetVotedPollIdsForUserAsync(string userId)
+  +Task<Poll?> GetPollByIdAsync(int id)
+  +Task<bool> SubmitVotesAsync(List<int> pollOptionIds, string userId)
+  +Task<IReadOnlyCollection<Poll>> GetAllPollsAsync()
+  +Task<IReadOnlyCollection<Poll>> GetClosedPollsAsync(string? questionText, DateTime? startDate, DateTime? endDate)
+  +Task<IReadOnlyCollection<Poll>> GetPollsCreatedByUser(string userid)
+  +Task<bool> CreatePollAsync(Poll newPoll)
+  +Task<bool> UpdatePollAsync(int pollId, string question, DateTime startDate, DateTime endDate, int minVotes, int maxVotes, List<string> options, string userId)
+}
+
+interface IUsersService {
+  +Task AddUserAsync(User user, string password, Role? role)
+  +Task<(string, string, string)> LoginAsync(string email, string password)
+  +Task<(string, string, string)> RegisterAsync(string email, string password)
+  +Task<(string, string, string)> RedeemRefreshTokenAsync(string refreshToken)
+  +Task LogoutAsync()
+  +Task<User?> GetCurrentUserAsync()
+  +string? GetCurrentUserId()
+  +Task<User> GetUserByIdAsync(string id)
+  +List<Role> GetCurrentUserRoles()
+  +bool IsCurrentUserAdmin()
+}
+
+' Service Implementations
+class PollsService {
+  -VotingSystemDbContext _context
+  +PollsService(VotingSystemDbContext context)
+}
+
+class UsersService {
+  -JwtSettings _jwtSettings
+  -IHttpContextAccessor _httpContextAccessor
+  -UserManager<User> _userManager
+  -SignInManager<User> _signInManager
+  -Task<string> GenerateJwtTokenAsync(User user)
+}
+
+' DI Extension
+class DependencyInjection <<static>> {
+  +{static} IServiceCollection AddDataAccess(IServiceCollection, IConfiguration)
+  +{static} void ConfigureDatabaseAndIdentity(IServiceCollection, IConfiguration)
+  +{static} void ConfigureJwtAuthentication(IServiceCollection, IConfiguration)
+}
+
+' Inheritance
+VotingSystemDbContext --|> IdentityDbContext : extends
+
+' Relationships - Data Models
+Poll "1" -- "many" PollOption : contains >
+Poll "many" -- "1" User : created by >
+PollOption "1" -- "many" Vote : has >
+Vote "many" -- "1" User : cast by >
+User -- Role : has >
+
+' Database Context relationships
+VotingSystemDbContext "1" -- "many" Poll : manages
+VotingSystemDbContext "1" -- "many" PollOption : manages
+VotingSystemDbContext "1" -- "many" Vote : manages
+VotingSystemDbContext "1" -- "many" User : manages
+
+
+DependencyInjection ..> PollsService : registers
+DependencyInjection ..> UsersService : registers
+DependencyInjection ..> VotingSystemDbContext : configures
+
+note right of VotingSystemDbContext
+  Extends IdentityDbContext<User>
+  - Configures relationships in OnModelCreating()
+  - Entity deletion behaviors
+end note
+
+note right of DependencyInjection
+  Extension methods:
+  - AddDataAccess(): registers services
+  - ConfigureDatabaseAndIdentity(): sets up EF and Identity
+  - ConfigureJwtAuthentication(): sets up JWT auth
+end note
+
+' Relationships - Services
+IPollsService <|.. PollsService : implements
+IUsersService <|.. UsersService : implements
+
+PollsService --> Poll : manages
+PollsService --> Vote : manages
+PollsService --> PollOption : manages
+
+UsersService --> User : manages
+UsersService --> Role : manages
+
+@enduml

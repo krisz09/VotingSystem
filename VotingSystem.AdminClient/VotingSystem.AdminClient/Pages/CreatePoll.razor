@@ -47,7 +47,7 @@
                             {
                                 var index = i;
                                 <div class="input-group mb-2">
-                                    <InputText class="form-control" @bind-Value="model.Options[index]" />
+                                    <InputText class="form-control option-input" @bind-Value="model.Options[index]" />
                                     <button type="button" class="btn btn-outline-danger" @onclick="() => RemoveOption(index)">
                                         ❌
                                     </button>

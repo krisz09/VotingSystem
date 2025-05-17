@@ -17,4 +17,4 @@
         public string FormattedEnd => EndDate.ToLocalTime().ToString("yyyy.MM.dd HH:mm");
 
     }
-}
+} 

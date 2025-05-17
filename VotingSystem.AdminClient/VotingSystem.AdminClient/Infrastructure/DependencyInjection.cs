@@ -36,7 +36,7 @@ namespace VotingSystem.AdminClient.Infrastructure
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IToastService, ToastService>();
             services.AddScoped<IPollsService, PollsService>();
-            services.AddScoped<AuthState>();
+            services.AddScoped<IAuthState>();
 
             return services;
         }

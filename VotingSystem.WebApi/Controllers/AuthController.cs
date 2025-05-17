@@ -77,47 +77,72 @@ public class UsersController : ControllerBase
         return Ok(userResponseDto);
     }
 
-    /// <summary>
-    /// Login
-    /// </summary>
-    /// <param name="loginRequestDto"></param>
-    /// <response code="200">Login was successful</response>
-    /// <response code="400">Bad Request</response>
-    /// <response code="403">Forbidden</response>
     [HttpPost]
     [Route("login")]
-    [ProducesResponseType(statusCode: StatusCodes.Status200OK, type: typeof(UserResponseDto))]
+    [ProducesResponseType(statusCode: StatusCodes.Status200OK, type: typeof(LoginResponseDto))]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
     {
-        var (authToken, refreshToken, userId) = await _usersService.LoginAsync(loginRequestDto.Email, loginRequestDto.Password);
-
-        var loginResponseDto = new LoginResponseDto
+        try
         {
-            UserId = userId,
-            AuthToken = authToken,
-            RefreshToken = refreshToken,
-        };
+            var (authToken, refreshToken, userId) = await _usersService.LoginAsync(loginRequestDto.Email, loginRequestDto.Password);
 
-        return Ok(loginResponseDto);
+            var loginResponseDto = new LoginResponseDto
+            {
+                UserId = userId,
+                AuthToken = authToken,
+                RefreshToken = refreshToken,
+            };
+
+            return Ok(loginResponseDto);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Unauthorized(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            // Log the exception for debugging purposes
+            Console.WriteLine($"Unexpected error during login: {ex.Message}");
+            return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred.");
+        }
     }
 
     [HttpPost("register")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
     {
-        var (authToken, refreshToken, userId) = await _usersService.RegisterAsync(registerDto.Email, registerDto.Password);
-
-        var loginResponseDto = new LoginResponseDto
+        try
         {
-            AuthToken = authToken,
-            RefreshToken = refreshToken,
-            UserId = userId
-        };
+            var (authToken, refreshToken, userId) = await _usersService.RegisterAsync(registerDto.Email, registerDto.Password);
 
-        return Ok(loginResponseDto);
+            var loginResponseDto = new LoginResponseDto
+            {
+                AuthToken = authToken,
+                RefreshToken = refreshToken,
+                UserId = userId
+            };
+
+            return Ok(loginResponseDto);
+        }
+        catch (InvalidOperationException ex) when (ex.Message.Contains("already exists"))
+        {
+            return Conflict(ex.Message); // 409 Conflict for existing user
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ex.Message); // 400 Bad Request for other validation errors
+        }
+        catch (Exception ex)
+        {
+            // Log the exception for debugging purposes
+            Console.WriteLine($"Unexpected error during registration: {ex.Message}");
+            return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred.");
+        }
     }
 
 

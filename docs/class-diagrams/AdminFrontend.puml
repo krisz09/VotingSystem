@@ -1,0 +1,204 @@
+@startuml "VotingSystem AdminClient Architecture"
+
+' Main application components
+package "Core Application" {
+  class Program <<static>> {
+    +{static} Main(string[] args)
+    +{static} CreateHostBuilder(string[] args)
+  }
+  
+  class App {
+    +BuildRenderTree(RenderTreeBuilder builder)
+    +OnInitialized()
+  }
+}
+
+' Exceptions
+package "Exceptions" {
+  class HttpRequestErrorException {
+    +int StatusCode
+    +string ReasonPhrase
+    +string Content
+    +HttpRequestErrorException(int statusCode, string reasonPhrase, string content)
+  }
+}
+
+' Infrastructure
+package "Infrastructure" {
+  class BlazorMappingProfile {
+    +BlazorMappingProfile()
+  }
+  
+  class DependencyInjection <<static>> {
+    +{static} IServiceCollection AddInfrastructure(this IServiceCollection services)
+  }
+  
+  interface IHttpRequestUtility {
+    +Task<T> GetAsync<T>(string requestUri)
+    +Task<T> PostAsync<T>(string requestUri, object content)
+    +Task<T> PutAsync<T>(string requestUri, object content)
+    +Task DeleteAsync(string requestUri)
+  }
+  
+  class HttpRequestUtility {
+    -HttpClient _httpClient
+    -ILogger<HttpRequestUtility> _logger
+    +HttpRequestUtility(HttpClient httpClient, ILogger<HttpRequestUtility> logger)
+    +Task<T> GetAsync<T>(string requestUri)
+    +Task<T> PostAsync<T>(string requestUri, object content)
+    +Task<T> PutAsync<T>(string requestUri, object content)
+    +Task DeleteAsync(string requestUri)
+  }
+}
+
+' Layout
+package "Layout" {
+  class MainLayout {
+    +BuildRenderTree(RenderTreeBuilder builder)
+    +OnInitialized()
+  }
+  
+  class NavMenu {
+    -bool collapseNavMenu
+    +BuildRenderTree(RenderTreeBuilder builder)
+    +ToggleNavMenu()
+  }
+  
+  class EditPollModal {
+    +EventCallback OnSave
+    +EventCallback OnCancel
+    +Poll PollToEdit
+    +BuildRenderTree(RenderTreeBuilder builder)
+    +SavePoll()
+    +Cancel()
+  }
+  
+  class Toast {
+    +string Message
+    +ToastType Type
+    +bool IsVisible
+    +EventCallback OnClose
+    +ShowToast(string message, ToastType type)
+    +CloseToast()
+  }
+}
+
+' Services and ViewModels
+package "Services" {
+  interface "IAuthService" {
+    +Task<AuthResult> Login(LoginModel loginModel)
+    +Task Logout()
+    +Task<bool> IsAuthenticated()
+    +Task<string> GetToken()
+  }
+  
+  interface "IPollService" {
+    +Task<List<PollViewModel>> GetPollsAsync()
+    +Task<PollDetailViewModel> GetPollAsync(int id)
+    +Task<bool> CreatePollAsync(CreatePollModel model)
+    +Task<bool> UpdatePollAsync(UpdatePollModel model)
+    +Task<bool> DeletePollAsync(int id)
+  }
+}
+
+package "ViewModels" {
+  class PollViewModel {
+    +int Id
+    +string Question
+    +DateTime StartDate
+    +DateTime EndDate
+    +int TotalVotes
+  }
+  
+  class PollDetailViewModel {
+    +int Id
+    +string Question
+    +DateTime StartDate
+    +DateTime EndDate
+    +int MinVotes
+    +int MaxVotes
+    +List<PollOptionViewModel> Options
+  }
+  
+  class PollOptionViewModel {
+    +int Id
+    +string OptionText
+    +int VoteCount
+  }
+  
+  class LoginModel {
+    +string Email
+    +string Password
+  }
+  
+  class AuthResult {
+    +bool Successful
+    +string Token
+    +string Error
+  }
+}
+
+' Pages (implied)
+package "Pages" {
+  class Index {
+    +BuildRenderTree(RenderTreeBuilder builder)
+  }
+  
+class Login {
+    -LoginModel _model
+    -string _errorMessage
+    -IAuthService _authService
+    -NavigationManager _navManager
+    +BuildRenderTree(RenderTreeBuilder builder)
+    +HandleLogin()
+  }
+  
+  class MyPolls {
+    -List<PollViewModel> polls
+    -HashSet<int> visiblePollIds
+    -bool isLoading
+    -string errorMessage
+    -PollViewModel selectedPoll
+    -bool isEditModalOpen
+    
+    +OnInitializedAsync()
+    +ToggleDetails(int pollId)
+    +OpenEditModal(PollViewModel poll)
+    +CloseEditModal()
+    +RefreshPolls()
+    +SaveEditedPoll(PollViewModel updatedPoll)
+  }
+  
+  class CreatePoll {
+    -CreatePollViewModel newPoll
+    -bool isLoading
+    -bool isSuccess
+    -string errorMessage
+    -List<string> tempOptions
+    -string newOption
+    
+    +OnInitializedAsync()
+    +AddOption()
+    +RemoveOption(string option)
+    +HandleValidSubmit()
+    +ResetForm()
+  }
+
+' Relationships
+Program --> App : creates
+App --> MainLayout : uses
+MainLayout --> NavMenu : contains
+MainLayout --> Toast : contains
+
+Login --> IAuthService : uses
+
+EditPollModal --> IPollService : uses
+
+IHttpRequestUtility <|.. HttpRequestUtility : implements
+DependencyInjection ..> HttpRequestUtility : registers
+DependencyInjection ..> BlazorMappingProfile : registers
+
+HttpRequestUtility ..> HttpRequestErrorException : throws
+
+
+@enduml

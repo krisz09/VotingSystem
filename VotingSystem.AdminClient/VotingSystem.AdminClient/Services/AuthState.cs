@@ -1,6 +1,6 @@
 ﻿namespace VotingSystem.AdminClient.Services
 {
-    public class AuthState
+    public class AuthState : IAuthState
     {
         public bool IsLoggedIn { get; private set; }
         public event Action? OnChange;

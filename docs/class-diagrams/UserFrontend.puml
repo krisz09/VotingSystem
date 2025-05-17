@@ -1,0 +1,161 @@
+@startuml "VotingSystem React Frontend"
+
+' Main application components
+package "App Structure" {
+  class App {
+    +render(): JSX
+  }
+  
+  class AppRoutes {
+    +routes: Route[]
+    +render(): JSX
+  }
+  
+  class AuthProvider {
+    -user: User | null
+    -token: string | null
+    -loading: boolean
+    +login(email, password): Promise<void>
+    +register(email, password): Promise<void>
+    +logout(): void
+    +refreshToken(): Promise<void>
+    +isAuthenticated(): boolean
+  }
+}
+
+' Pages/Components
+package "Components" {
+  class Home {
+    +navigate: NavigateFunction
+    +render(): JSX
+  }
+  
+  class Login {
+    -email: string
+    -password: string
+    -loading: boolean
+    +handleSubmit(e): void
+    +render(): JSX
+  }
+  
+  class ActivePollsPage {
+    -polls: Poll[]
+    -loading: boolean
+    +fetchPolls(): Promise<void>
+    +render(): JSX
+  }
+  
+  class ActivePollsList {
+    -polls: Poll[]
+    +render(): JSX
+  }
+  
+  class ClosedPollsList {
+    -polls: Poll[]
+    -filters: PollFilters
+    +handleFilterChange(filters): void
+    +render(): JSX
+  }
+  
+  class ForgotPassword {
+    -email: string
+    -submitted: boolean
+    +handleSubmit(e): void
+    +render(): JSX
+  }
+}
+
+' API Services
+package "Services" {
+  class Api {
+    +baseUrl: string
+    +get<T>(url): Promise<T>
+    +post<T>(url, data): Promise<T>
+    +put<T>(url, data): Promise<T>
+    +delete<T>(url): Promise<T>
+    +getActivePolls(): Promise<Poll[]>
+    +getPoll(id): Promise<Poll>
+    +submitVote(options): Promise<boolean>
+    +login(email, password): Promise<AuthResponse>
+    +register(email, password): Promise<AuthResponse>
+    +refreshToken(token): Promise<AuthResponse>
+  }
+}
+
+' Context
+package "Context" {
+  class AuthContext {
+    +user: User | null
+    +login(email, password): Promise<void>
+    +register(email, password): Promise<void>
+    +logout(): void
+    +refreshToken(): Promise<void>
+  }
+}
+
+' Models/Types
+package "Models" {
+  class User {
+    +id: string
+    +email: string
+    +roles: string[]
+  }
+  
+  class Poll {
+    +id: number
+    +question: string
+    +startDate: Date
+    +endDate: Date
+    +options: PollOption[]
+  }
+  
+  class PollOption {
+    +id: number
+    +optionText: string
+    +votes: number
+  }
+  
+  class AuthResponse {
+    +token: string
+    +refreshToken: string
+    +userId: string
+  }
+}
+
+' Relationships
+App --> AppRoutes : contains
+App ..> AuthProvider : wrapped by
+AuthProvider --> AuthContext : provides
+
+AppRoutes --> Home : routes to
+AppRoutes --> Login : routes to
+AppRoutes --> ActivePollsPage : routes to
+AppRoutes --> ClosedPollsList : routes to
+AppRoutes --> ForgotPassword : routes to
+
+ActivePollsPage --> ActivePollsList : contains
+ActivePollsPage --> Api : uses
+ClosedPollsList --> Api : uses
+Login --> Api : uses
+Login --> AuthContext : uses
+ForgotPassword --> Api : uses
+
+AuthProvider --> Api : uses
+
+note right of AuthContext
+  React Context for managing
+  authentication state across
+  the application
+end note
+
+note right of Api
+  Centralized API service for
+  all backend communication
+end note
+
+note right of AppRoutes
+  Defines all application routes
+  using react-router-dom
+end note
+
+@enduml

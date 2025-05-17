@@ -1,0 +1,144 @@
+@startuml "VotingSystem.WebApi Class Diagram"
+
+' Controllers
+package "Controllers" {
+  class VotesController {
+    -IMapper _mapper
+    -IPollsService _pollsService
+    -VotingSystemDbContext _context
+    +VotesController(IPollsService, IMapper, VotingSystemDbContext)
+    +GetActivePolls(): Task<IActionResult>
+    +GetClosedPolls(string?, DateTime?, DateTime?): Task<ActionResult>
+    +GetAllPolls(): Task<ActionResult<IEnumerable<PollResponseDto>>>
+    +GetMyPolls(): Task<ActionResult>
+    +CreatePoll(CreatePollRequestDto): Task<IActionResult>
+    +SubmitVote(SubmitVoteRequest): Task<IActionResult>
+  }
+  
+  class AuthController {
+    -IUsersService _usersService
+    -IUserAccountService _userAccountService
+    -IMapper _mapper
+    +AuthController(IUsersService, IUserAccountService, IMapper)
+    +Register(RegisterRequest): ActionResult<UserDto>
+    +Login(LoginRequest): ActionResult<UserDto>
+    +RefreshToken(RefreshTokenRequest): ActionResult<UserDto>
+    +Logout(): ActionResult
+  }
+}
+
+' Infrastructure
+package "Infrastructure" {
+  class MappingProfile {
+    +MappingProfile()
+  }
+  
+  interface IEmailService {
+    +SendEmailAsync(string to, string subject, string body): Task
+  }
+  
+  class EmailService {
+    -ILogger<EmailService> _logger
+    +EmailService(ILogger<EmailService>)
+    +SendEmailAsync(string to, string subject, string body): Task
+  }
+  
+  interface IUserAccountService {
+    +SendConfirmationEmailAsync(string email, string token): Task
+    +SendPasswordResetEmailAsync(string email, string token): Task
+  }
+  
+  class UserAccountService {
+    -IEmailService _emailService
+    +UserAccountService(IEmailService)
+    +SendConfirmationEmailAsync(string email, string token): Task
+    +SendPasswordResetEmailAsync(string email, string token): Task
+  }
+}
+
+' Program
+class Program <<static>> {
+  +{static} Main(string[] args): void
+}
+
+' Request/Response DTOs
+package "Models" {
+  class PollResponseDto {
+    +int Id
+    +string Question
+    +DateTime StartDate
+    +DateTime EndDate
+    +List<PollOptionDto> Options
+  }
+  
+  class PollOptionDto {
+    +int Id
+    +string OptionText
+    +int VoteCount
+  }
+  
+  class SubmitVoteRequest {
+    +List<int> OptionIds
+  }
+  
+  class CreatePollRequestDto {
+    +string Question
+    +DateTime StartDate
+    +DateTime EndDate
+    +int MinVotes
+    +int MaxVotes
+    +List<string> Options
+  }
+  
+  class UserDto {
+    +string Id
+    +string Email
+    +string Token
+    +string RefreshToken
+  }
+}
+
+' Data Access references
+package "VotingSystem.DataAccess" #DDDDDD {
+  class VotingSystemDbContext
+  interface IPollsService
+  interface IUsersService
+}
+
+' Relationships
+VotesController --> IPollsService : uses
+VotesController --> VotingSystemDbContext : uses
+AuthController --> IUsersService : uses
+AuthController --> IUserAccountService : uses
+
+IUserAccountService <|.. UserAccountService : implements
+IEmailService <|.. EmailService : uses
+UserAccountService --> IEmailService : uses
+
+Program ..> VotesController : configures
+Program ..> AuthController : configures
+Program ..> EmailService : registers
+Program ..> UserAccountService : registers
+
+' Other relationships
+VotesController ..> PollResponseDto : returns
+VotesController ..> SubmitVoteRequest : accepts
+VotesController ..> CreatePollRequestDto : accepts
+AuthController ..> UserDto : returns
+
+note top of Program
+  Configures services:
+  - Controllers
+  - Authentication
+  - Database context
+  - Swagger
+  - AutoMapper
+  - CORS policy
+end note
+
+note right of MappingProfile
+  Configures AutoMapper to map
+  between domain models and DTOs
+end note
+
+@enduml

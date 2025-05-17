@@ -1,15 +1,12 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using VotingSystem.DataAccess;
-using VotingSystem.WebApi;
+using VotingSystem.DataAccess.Models;
 
 namespace VotingSystem.IntegrationTest
 {
@@ -31,31 +28,38 @@ namespace VotingSystem.IntegrationTest
                     options.UseInMemoryDatabase("VotingSystemTestDb");
                 });
 
-                // Optionally seed data here if needed
+                // Build the service provider
                 var sp = services.BuildServiceProvider();
 
                 using var scope = sp.CreateScope();
                 var scopedServices = scope.ServiceProvider;
                 var db = scopedServices.GetRequiredService<VotingSystemDbContext>();
+                var roleManager = scopedServices.GetRequiredService<RoleManager<IdentityRole>>();
 
                 db.Database.EnsureCreated();
 
-                // 👉 Seed data
+                // Seed roles
+                if (!roleManager.RoleExistsAsync("Admin").Result)
+                {
+                    roleManager.CreateAsync(new IdentityRole("Admin")).Wait();
+                }
+
+                // Seed test data
                 db.Polls.Add(new Poll
                 {
-                    Id = 1,
                     Question = "Test Poll",
                     CreatedByUserId = "abc",
                     StartDate = DateTime.UtcNow,
                     EndDate = DateTime.UtcNow.AddDays(1),
                     Minvotes = 1,
                     Maxvotes = 2,
-                    PollOptions = new List<PollOption>
-            {
-                new PollOption { OptionText = "Yes" },
-                new PollOption { OptionText = "No" }
-            }
+                    PollOptions = new System.Collections.Generic.List<PollOption>
+                    {
+                        new PollOption { OptionText = "Yes" },
+                        new PollOption { OptionText = "No" }
+                    }
                 });
+
                 db.SaveChanges();
             });
         }

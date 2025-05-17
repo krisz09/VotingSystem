@@ -1,0 +1,92 @@
+@startuml "VotingSystem Database Schema"
+
+' Define table styles
+!define TABLE_BORDER_COLOR #073B4C
+!define PK_BG_COLOR #06D6A0
+!define FK_BG_COLOR #FFD166
+!define TABLE_BG_COLOR #EFF6FF
+
+' Style settings
+skinparam class {
+  BackgroundColor TABLE_BG_COLOR
+  BorderColor TABLE_BORDER_COLOR
+  ArrowColor TABLE_BORDER_COLOR
+}
+
+' AspNetUsers (User) table
+class AspNetUsers << (T,#118AB2) >> {
+  <color:PK_BG_COLOR>+ Id : string <<PK>></color>
+  --
+  Email : string
+  UserName : string
+  PasswordHash : string
+  RefreshToken : Guid?
+}
+
+' AspNetRoles table
+class AspNetRoles << (T,#118AB2) >> {
+  <color:PK_BG_COLOR>+ Id : string <<PK>></color>
+  --
+  Name : string
+}
+
+' AspNetUserRoles table
+class AspNetUserRoles << (T,#118AB2) >> {
+  <color:FK_BG_COLOR>+ UserId : string <<FK>></color>
+  <color:FK_BG_COLOR>+ RoleId : string <<FK>></color>
+}
+
+' Poll table
+class Polls << (T,#118AB2) >> {
+  <color:PK_BG_COLOR>+ Id : int <<PK>></color>
+  --
+  Question : string
+  StartDate : DateTime
+  EndDate : DateTime
+  <color:FK_BG_COLOR>+ CreatedByUserId : string <<FK>></color>
+  MinVotes : int
+  MaxVotes : int
+}
+
+' PollOption table
+class PollOptions << (T,#118AB2) >> {
+  <color:PK_BG_COLOR>+ Id : int <<PK>></color>
+  --
+  OptionText : string
+  <color:FK_BG_COLOR>+ PollId : int <<FK>></color>
+}
+
+' Vote table
+class Votes << (T,#118AB2) >> {
+  <color:PK_BG_COLOR>+ Id : int <<PK>></color>
+  --
+  <color:FK_BG_COLOR>+ UserId : string <<FK>></color>
+  <color:FK_BG_COLOR>+ PollOptionId : int <<FK>></color>
+  VotedAt : DateTime
+}
+
+' Define relationships with cardinality
+AspNetUsers "1" -- "0..*" AspNetUserRoles : has
+AspNetRoles "1" -- "0..*" AspNetUserRoles : contains
+
+' Poll relationships
+AspNetUsers "1" -- "0..*" Polls : creates >
+Polls "1" -- "1..*" PollOptions : contains >
+PollOptions "1" -- "0..*" Votes : receives >
+AspNetUsers "1" -- "0..*" Votes : casts >
+
+' Add notes
+note bottom of Polls
+  StartDate and EndDate define the
+  time window when voting is allowed.
+  MinVotes and MaxVotes control how many
+  options a user can select.
+end note
+
+note right of Votes
+  A user can only vote once per poll
+  (enforced by unique constraint on
+  UserId + PollOptionId)
+end note
+
+@enduml

@@ -1,0 +1,85 @@
+@startuml "Complete VotingSystem Architecture"
+
+' Define the main components
+package "VotingSystem" {
+  
+  package "Frontend Layer" {
+    ' React User Frontend
+    component "VotingSystem React Frontend" as ReactFrontend {
+      [App]
+      [AuthProvider]
+      [API Service]
+      [Routes]
+      component "Pages/Components" as ReactPages
+    }
+
+    ' Blazor Admin Frontend
+    component "VotingSystem.AdminClient" as AdminClient {
+      [Program]
+      [Infrastructure]
+      [Services]
+      [Pages]
+      [Layout]
+    }
+  }
+
+  package "Backend Layer" {
+    ' Web API
+    component "VotingSystem.WebApi" as WebApi {
+      [Controllers]
+      [Infrastructure]
+      [Middleware]
+      [Program]
+    }
+
+    ' Data Access Layer
+    component "VotingSystem.DataAccess" as DataAccess {
+      [Models]
+      [Services]
+      [DbContext]
+      [Extensions]
+      [Config]
+    }
+  }
+
+  ' Shared
+  component "VotingSystem.Shared" as Shared {
+    [DTOs]
+    [ViewModels]
+  }
+
+  ' External Dependencies
+  database "SQL Server" as SqlDb {
+    [Poll Data]
+    [User Data]
+    [Votes]
+  }
+
+  ' API Gateway / Authentication
+  component "Identity & Authentication" as Identity {
+    [JWT Provider]
+    [User Manager]
+  }
+}
+
+' Define the relationships
+ReactFrontend --> WebApi : HTTP Requests
+AdminClient --> WebApi : HTTP Requests
+WebApi --> DataAccess : Uses
+DataAccess --> SqlDb : EF Core
+WebApi ..> Identity : Authentication
+WebApi ..> Shared : Data Transfer
+AdminClient ..> Shared : Data Transfer
+ReactFrontend ..> Shared : Data Models (TS equivalents)
+
+' Detail the internals of each component
+ReactFrontend.API_Service ..> ReactFrontend.AuthProvider : Auth tokens
+ReactFrontend.Routes --> ReactPages : Renders
+AdminClient.Services ..> AdminClient.Pages : Provide data
+WebApi.Controllers ..> DataAccess.Services : Call
+DataAccess.Services ..> DataAccess.Models : Manage
+DataAccess.DbContext ..> SqlDb : Access
+
+
+
+@enduml
