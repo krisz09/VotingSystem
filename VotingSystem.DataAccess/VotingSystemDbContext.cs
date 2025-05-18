@@ -9,9 +9,9 @@ namespace VotingSystem.DataAccess
     {
         public VotingSystemDbContext(DbContextOptions<VotingSystemDbContext> options) : base(options) { }
 
-        public DbSet<Poll> Polls { get; set; }
-        public DbSet<PollOption> PollOptions { get; set; }
-        public DbSet<Vote> Votes { get; set; }
+        public DbSet<Poll> Polls { get; set; } = null!;
+        public DbSet<PollOption> PollOptions { get; set; } = null!;
+        public DbSet<Vote> Votes { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

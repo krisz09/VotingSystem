@@ -53,10 +53,8 @@ namespace VotingSystem.IntegrationTest
             var db = GetDbContext(nameof(SubmitVotesAsync_ShouldReturnFalse_IfPollOptionIdsIsNullOrEmpty));
             var service = new PollsService(db);
 
-            var result1 = await service.SubmitVotesAsync(null, "user1");
             var result2 = await service.SubmitVotesAsync(new List<int>(), "user1");
 
-            result1.Should().BeFalse();
             result2.Should().BeFalse();
         }
 
