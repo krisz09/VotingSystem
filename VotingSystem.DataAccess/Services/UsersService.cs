@@ -12,7 +12,7 @@ using VotingSystem.DataAccess.Models;
 
 namespace VotingSystem.DataAccess.Services;
 
-internal class UsersService : IUsersService
+public class UsersService : IUsersService
 {
     private readonly JwtSettings _jwtSettings;
     private readonly IHttpContextAccessor _httpContextAccessor;

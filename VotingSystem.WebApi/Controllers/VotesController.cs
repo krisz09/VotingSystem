@@ -202,7 +202,7 @@ namespace VotingSystem.WebApi.Controllers
         }
 
 
-
+        [Authorize]
         [HttpPost("submit-vote")]
         public async Task<IActionResult> SubmitVote([FromBody] SubmitVoteRequestDto request)
         {

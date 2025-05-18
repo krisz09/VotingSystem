@@ -117,6 +117,16 @@ public class UsersController : ControllerBase
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
     {
+        if (string.IsNullOrWhiteSpace(registerDto.Email))
+        {
+            return BadRequest("Email is required.");
+        }
+
+        if (string.IsNullOrWhiteSpace(registerDto.Password))
+        {
+            return BadRequest("Password is required.");
+        }
+
         try
         {
             var (authToken, refreshToken, userId) = await _usersService.RegisterAsync(registerDto.Email, registerDto.Password);
@@ -132,15 +142,15 @@ public class UsersController : ControllerBase
         }
         catch (InvalidOperationException ex) when (ex.Message.Contains("already exists"))
         {
-            return Conflict(ex.Message); // 409 Conflict for existing user
+            return Conflict(ex.Message); // 409 Conflict for existing user  
         }
         catch (InvalidOperationException ex)
         {
-            return BadRequest(ex.Message); // 400 Bad Request for other validation errors
+            return BadRequest(ex.Message); // 400 Bad Request for other validation errors  
         }
         catch (Exception ex)
         {
-            // Log the exception for debugging purposes
+            // Log the exception for debugging purposes  
             Console.WriteLine($"Unexpected error during registration: {ex.Message}");
             return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred.");
         }
