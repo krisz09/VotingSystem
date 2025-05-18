@@ -3,36 +3,41 @@ using System.Web;
 using VotingSystem.DataAccess;
 using VotingSystem.WebApi.Infrastructure;
 
-public class UserAccountService : IUserAccountService
+namespace VotingSystem.WebApi.Infrastructure
 {
-    private readonly UserManager<User> _userManager;
-    private readonly IEmailService _emailService;
 
-    public UserAccountService(UserManager<User> userManager, IEmailService emailService)
+    public class UserAccountService : IUserAccountService
     {
-        _userManager = userManager;
-        _emailService = emailService;
-    }
+        private readonly UserManager<User> _userManager;
+        private readonly IEmailService _emailService;
 
-    public async Task<bool> SendResetPasswordLinkAsync(string email)
-    {
-        var user = await _userManager.FindByEmailAsync(email);
-        if (user == null) return false;
+        public UserAccountService(UserManager<User> userManager, IEmailService emailService)
+        {
+            _userManager = userManager;
+            _emailService = emailService;
+        }
 
-        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-        var url = $"http://localhost:3000/reset-password?token={HttpUtility.UrlEncode(token)}&email={HttpUtility.UrlEncode(email)}";
-        await _emailService.SendEmailAsync(email, "Reset your password", $"Click <a href='{url}'>here</a>.");
-        return true;
-    }
+        public async Task<bool> SendResetPasswordLinkAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null) return false;
 
-    public async Task<bool> ResetPasswordAsync(string email, string token, string newPassword)
-    {
-        var user = await _userManager.FindByEmailAsync(email);
-        if (user == null)
-            return false;
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var url = $"http://localhost:3000/reset-password?token={HttpUtility.UrlEncode(token)}&email={HttpUtility.UrlEncode(email)}";
+            await _emailService.SendEmailAsync(email, "Reset your password", $"Click <a href='{url}'>here</a>.");
+            return true;
+        }
 
-        var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
-        return result.Succeeded;
+        public async Task<bool> ResetPasswordAsync(string email, string token, string newPassword)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                return false;
+
+            var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
+            return result.Succeeded;
+        }
+
     }
 
 }

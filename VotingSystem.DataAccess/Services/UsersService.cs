@@ -85,7 +85,7 @@ internal class UsersService : IUsersService
 
     var accessToken = await GenerateJwtTokenAsync(user);
 
-    return (accessToken, user.RefreshToken.ToString(), user.Id);
+        return (accessToken, user.RefreshToken?.ToString() ?? string.Empty, user.Id);
 }
 
     public async Task<(string authToken, string refreshToken, string userId)> RedeemRefreshTokenAsync(string refreshToken)

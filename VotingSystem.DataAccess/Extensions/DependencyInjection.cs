@@ -46,7 +46,11 @@ namespace VotingSystem.DataAccess.Extensions
 
         public static void ConfigureJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-            var key = Encoding.UTF8.GetBytes(configuration["Jwt:Secret"]);
+            var secret = configuration["Jwt:Secret"];
+            if (string.IsNullOrEmpty(secret))
+                throw new InvalidOperationException("JWT secret is not configured (Jwt:Secret).");
+
+            var key = Encoding.UTF8.GetBytes(secret);
 
             services.AddAuthentication(options =>
             {

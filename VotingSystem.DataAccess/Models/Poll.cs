@@ -23,7 +23,7 @@ namespace VotingSystem.DataAccess {
         [Required]
         public DateTime EndDate { get; set; }
         [ForeignKey("User")]
-        public string CreatedByUserId { get; set; }
+        public string? CreatedByUserId { get; set; }
         public virtual User CreatedByUser { get; set; } = null!;
          
         public int Minvotes { get; set; } = 1;

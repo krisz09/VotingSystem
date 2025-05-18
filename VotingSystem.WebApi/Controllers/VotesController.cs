@@ -57,10 +57,16 @@ namespace VotingSystem.WebApi.Controllers
         [Authorize]
         [HttpGet("closed-polls")]
         public async Task<ActionResult> GetClosedPolls(
-    [FromQuery] string? questionText,
-    [FromQuery] DateTime? startDate,
-    [FromQuery] DateTime? endDate)
+           [FromQuery] string? questionText,
+           [FromQuery] DateTime? startDate,
+           [FromQuery] DateTime? endDate)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Unauthorized();
+            }
+
             var closedPolls = await _pollsService.GetClosedPollsAsync(questionText, startDate, endDate);
 
             if (closedPolls == null || !closedPolls.Any())
@@ -71,7 +77,6 @@ namespace VotingSystem.WebApi.Controllers
 
             var closedPollsDto = _mapper.Map<List<PollResponseDto>>(closedPolls);
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var votedPollIds = await _pollsService.GetVotedPollIdsForUserAsync(userId);
             foreach (var dto in closedPollsDto)
             {

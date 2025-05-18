@@ -4,46 +4,61 @@ using VotingSystem.AdminClient.Services;
 using VotingSystem.AdminClient.ViewModels;
 using VotingSystem.Shared.Models;
 
-public class PollsService : IPollsService
+namespace VotingSystem.AdminClient.Services
 {
-    private readonly IHttpRequestUtility _httpRequestUtility;
-    private readonly IMapper _mapper;
 
-    public PollsService(IHttpRequestUtility httpRequestUtility, IMapper mapper)
+    public class PollsService : IPollsService
     {
-        _httpRequestUtility = httpRequestUtility;
-        _mapper = mapper;
-    }
+        private readonly IHttpRequestUtility _httpRequestUtility;
+        private readonly IMapper _mapper;
 
-    public async Task<List<PollViewModel>> GetPollsCreatedByUserAsync()
-    {
-        var result = await _httpRequestUtility.ExecuteGetHttpRequestAsync<List<PollResponseDto>>("api/votes/mypolls");
-        return _mapper.Map<List<PollViewModel>>(result.Response);
-    }
-
-    public async Task<bool> CreatePollAsync(CreatePollViewModel vm)
-    {
-        var dto = new CreatePollRequestDto
+        public PollsService(IHttpRequestUtility httpRequestUtility, IMapper mapper)
         {
-            Question = vm.Question,
-            StartDate = vm.StartDate!.Value,
-            EndDate = vm.EndDate!.Value,
-            MinVotes = vm.minVotes,
-            MaxVotes = vm.maxVotes,
-            Options = vm.Options.Where(opt => !string.IsNullOrWhiteSpace(opt)).ToList()
-        };
+            _httpRequestUtility = httpRequestUtility;
+            _mapper = mapper;
+        }
+
+        public async Task<List<PollViewModel>> GetPollsCreatedByUserAsync()
+        {
+            var result = await _httpRequestUtility.ExecuteGetHttpRequestAsync<List<PollResponseDto>>("api/votes/mypolls");
+            return _mapper.Map<List<PollViewModel>>(result.Response);
+        }
+
+        public async Task<bool> CreatePollAsync(CreatePollViewModel vm)
+        {
+            if (string.IsNullOrWhiteSpace(vm.Question))
+            {
+                throw new ArgumentException("Question cannot be null or empty.", nameof(vm.Question));
+            }
+
+            if (!vm.StartDate.HasValue || !vm.EndDate.HasValue)
+            {
+                throw new ArgumentException("StartDate and EndDate must have valid values.");
+            }
+
+            var dto = new CreatePollRequestDto
+            {
+                Question = vm.Question,
+                StartDate = vm.StartDate.Value,
+                EndDate = vm.EndDate.Value,
+                MinVotes = vm.minVotes,
+                MaxVotes = vm.maxVotes,
+                Options = vm.Options.Where(opt => !string.IsNullOrWhiteSpace(opt)).ToList()
+            };
+
             await _httpRequestUtility.ExecutePostHttpRequestAsync<CreatePollRequestDto, PollResponseDto>("api/votes/create", dto);
             return true;
+        }
+
+        public async Task<bool> UpdatePollAsync(PollViewModel vm)
+        {
+            var dto = _mapper.Map<UpdatePollRequestDto>(vm); // vagy PollViewModel-t küldesz, ha az elég
+
+            var result = await _httpRequestUtility.ExecutePutHttpRequestAsync<UpdatePollRequestDto ,PollResponseDto>(
+                $"api/votes/{vm.Id}", dto);
+
+            return true;
+        }
+
     }
-
-    public async Task<bool> UpdatePollAsync(PollViewModel vm)
-    {
-        var dto = _mapper.Map<UpdatePollRequestDto>(vm); // vagy PollViewModel-t küldesz, ha az elég
-
-        var result = await _httpRequestUtility.ExecutePutHttpRequestAsync<UpdatePollRequestDto ,PollResponseDto>(
-            $"api/votes/{vm.Id}", dto);
-
-        return true;
-    }
-
 }

@@ -43,8 +43,14 @@ namespace VotingSystem.IntegrationTest
             loginResponse.EnsureSuccessStatusCode();
             var json = await loginResponse.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<dynamic>(json);
+            if (result is null)
+                throw new InvalidOperationException("Login response was null.");
+            if (result.authToken is null)
+                throw new InvalidOperationException("Login response did not contain an authToken.");
 
             return result.authToken;
+
+
         }
 
         private async Task AuthenticateAsync()
@@ -68,10 +74,19 @@ namespace VotingSystem.IntegrationTest
             var content = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<dynamic>(content);
 
-            // Validate the response
+            if (result is null)
+                throw new InvalidOperationException("Registration response was null.");
+            if (result.authToken is null)
+                throw new InvalidOperationException("Registration response did not contain an authToken.");
+            if (result.refreshToken is null)
+                throw new InvalidOperationException("Registration response did not contain a refreshToken.");
+            if (result.userId is null)
+                throw new InvalidOperationException("Registration response did not contain a userId.");
+
             string authToken = result.authToken.ToString();
             string refreshToken = result.refreshToken.ToString();
             string userId = result.userId.ToString();
+
 
             authToken.Should().NotBeNullOrWhiteSpace("registration should return a valid auth token.");
             refreshToken.Should().NotBeNullOrWhiteSpace("registration should return a valid refresh token.");
@@ -108,10 +123,13 @@ namespace VotingSystem.IntegrationTest
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<LoginResponseDto>(content);
+            if (result is null)
+                throw new InvalidOperationException("Login response was null or not in the expected format.");
             result.AuthToken.Should().NotBeNullOrWhiteSpace("login should return a valid auth token.");
+
         }
 
-       [Fact]
+        [Fact]
         public async Task Login_WithInvalidCredentials_ShouldFail()
         {
             // Arrange

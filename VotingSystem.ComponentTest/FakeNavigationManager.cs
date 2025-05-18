@@ -1,14 +1,16 @@
 using Microsoft.AspNetCore.Components;
-
-public class FakeNavigationManager : NavigationManager
+namespace VotingSystem.ComponentTest
 {
-    public FakeNavigationManager()
+    public class FakeNavigationManager : NavigationManager
     {
-        Initialize("http://localhost/", "http://localhost/");
-    }
+        public FakeNavigationManager()
+        {
+            Initialize("http://localhost/", "http://localhost/");
+        }
 
-    protected override void NavigateToCore(string uri, bool forceLoad)
-    {
-        Uri = ToAbsoluteUri(uri).ToString();
+        protected override void NavigateToCore(string uri, bool forceLoad)
+        {
+            Uri = ToAbsoluteUri(uri).ToString();
+        }
     }
 }

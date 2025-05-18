@@ -18,7 +18,7 @@ namespace VotingSystem.DataAccess {
         [Key]
         public int Id { get; set; }
         [ForeignKey("User")]
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
         [ForeignKey("PollOption")]
         public int PollOptionId { get; set; }
         public DateTime VotedAt { get; set; }
