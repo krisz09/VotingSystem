@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VotingSystem.DataAccess.Services;
 using VotingSystem.DataAccess;
+using VotingSystem.WebApi.Infrastructure;
 
 namespace VotingSystem.WebApi.Controllers;
 
