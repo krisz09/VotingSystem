@@ -39,8 +39,8 @@ namespace VotingSystem.AdminClient.Services
             var dto = new CreatePollRequestDto
             {
                 Question = vm.Question,
-                StartDate = vm.StartDate.Value,
-                EndDate = vm.EndDate.Value,
+                StartDate = DateTime.SpecifyKind(vm.StartDate.Value, DateTimeKind.Local),
+                EndDate = DateTime.SpecifyKind(vm.EndDate.Value, DateTimeKind.Local),
                 MinVotes = vm.minVotes,
                 MaxVotes = vm.maxVotes,
                 Options = vm.Options.Where(opt => !string.IsNullOrWhiteSpace(opt)).ToList()

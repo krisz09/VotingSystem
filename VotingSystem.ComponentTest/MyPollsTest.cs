@@ -99,8 +99,8 @@ namespace VotingSystem.ComponentTest
             Assert.NotNull(pollDetails);
 
             // Assert the content of poll details
-            Assert.Contains("Start: 2025.05.01 02:00", pollDetails.TextContent);
-            Assert.Contains("End: 2025.05.10 02:00", pollDetails.TextContent);
+            Assert.Contains("Start: 2025.05.01 00:00", pollDetails.TextContent);
+            Assert.Contains("End: 2025.05.10 00:00", pollDetails.TextContent);
         }
 
         [Fact]

@@ -13,6 +13,19 @@ namespace VotingSystem.AdminClient.ViewModels
         [Required]
         public DateTime? EndDate { get; set; }
 
+        public DateTime? StartDateLocal
+        {
+            get => StartDate.HasValue ? DateTime.SpecifyKind(StartDate.Value, DateTimeKind.Local) : (DateTime?)null;
+            set => StartDate = value;
+        }
+
+        public DateTime? EndDateLocal
+        {
+            get => EndDate.HasValue ? DateTime.SpecifyKind(EndDate.Value, DateTimeKind.Local) : (DateTime?)null;
+            set => EndDate = value;
+        }
+
+
         [Required]
         public int minVotes { get; set; } = 1;
 

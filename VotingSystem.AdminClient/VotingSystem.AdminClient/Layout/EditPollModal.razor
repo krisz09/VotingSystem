@@ -80,6 +80,13 @@
                         {
                             <div class="text-danger">Invalid voting range. MinVotes must be ≥ 1 and ≤ MaxVotes.</div>
                         }
+                        @if (IsEndDateEarlier)
+                        {
+                            <div class="text-warning mt-1">
+                                ⚠️ End date is earlier than the original end date (<b>@OriginalEndDate.ToString("g")</b>).
+                            </div>
+                        }
+
 
 
 
@@ -100,12 +107,14 @@
 }
 @code {
     [Parameter] public PollViewModel? Poll { get; set; }
+    private DateTime OriginalEndDate;
     [Parameter] public EventCallback<PollViewModel> OnSave { get; set; }
     [Parameter] public bool IsOpen { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
 
     private PollViewModel EditablePoll = new();
-    private bool CanEditAll => Poll != null && Poll.StartDate > DateTime.UtcNow && !Poll.HasVotes;
+    private bool CanEditAll => Poll != null && Poll.StartDate > DateTime.Now && !Poll.HasVotes;
+    private bool IsEndDateEarlier => EditablePoll.EndDate < OriginalEndDate;
 
     private bool _previousIsOpen;
 
@@ -131,9 +140,9 @@
                         })
                         .ToList()
                 };
+            OriginalEndDate = Poll.EndDate;
             StateHasChanged();
         }
-
         _previousIsOpen = IsOpen;
     }
 
@@ -161,13 +170,22 @@
     {
         var now = DateTime.Now;
 
-        return EditablePoll.MinVotes >= 1 &&
+        if (CanEditAll) {
+            return EditablePoll.MinVotes >= 1 &&
                EditablePoll.MaxVotes >= EditablePoll.MinVotes &&
                EditablePoll.MaxVotes <= EditablePoll.Options.Count &&
                EditablePoll.Options.All(o => !string.IsNullOrWhiteSpace(o.OptionText)) &&
                EditablePoll.StartDate > now &&
                EditablePoll.EndDate > now &&
+               !IsEndDateEarlier &&
                (EditablePoll.EndDate - EditablePoll.StartDate).TotalMinutes >= 15;
+        }
+        else {
+
+            return EditablePoll.EndDate > now &&
+                   !IsEndDateEarlier &&
+                   (EditablePoll.EndDate - EditablePoll.StartDate).TotalMinutes >= 15;
+        }
     }
 
 

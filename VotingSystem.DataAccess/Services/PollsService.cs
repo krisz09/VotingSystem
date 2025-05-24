@@ -154,39 +154,54 @@ namespace VotingSystem.DataAccess.Services
         }
 
         public async Task<bool> UpdatePollAsync(
-            int pollId,
-            string question,
-            DateTime startDate,
-            DateTime endDate,
-            int minVotes,
-            int maxVotes,
-            List<string> options,
-            string userId)
+    int pollId,
+    string question,
+    DateTime startDate,
+    DateTime endDate,
+    int minVotes,
+    int maxVotes,
+    List<string> options,
+    string userId)
         {
+            Console.WriteLine($"[INFO] Attempting to update poll {pollId} by user {userId}");
+
             var poll = await _context.Polls
                 .Include(p => p.PollOptions)
-                    .ThenInclude(po => po.Votes) // 🔍 include votes via PollOption
+                    .ThenInclude(po => po.Votes)
                 .FirstOrDefaultAsync(p => p.Id == pollId && p.CreatedByUserId == userId);
 
             if (poll == null)
+            {
+                Console.WriteLine($"[WARN] Poll {pollId} not found or not owned by user {userId}");
                 return false;
+            }
 
-            // 🔄 check if any of the options have votes
             var hasVotes = poll.PollOptions.Any(po => po.Votes.Any());
-            var now = DateTime.UtcNow;
+            var now = DateTime.Now;
             var canEditAll = poll.StartDate > now && !hasVotes;
+
+            Console.WriteLine($"[DEBUG] canEditAll: {canEditAll}, hasVotes: {hasVotes}, poll.StartDate: {poll.StartDate}, now: {now}");
 
             if (!canEditAll)
             {
                 if (endDate <= poll.EndDate)
+                {
+                    Console.WriteLine($"[WARN] New end date {endDate} is not later than current end date {poll.EndDate}");
                     return false;
+                }
 
                 poll.EndDate = endDate;
+                Console.WriteLine($"[INFO] Poll {pollId} end date updated to {endDate}");
             }
             else
             {
                 if (minVotes < 1 || maxVotes > options.Count || minVotes > maxVotes)
+                {
+                    Console.WriteLine($"[WARN] Invalid vote limits: minVotes={minVotes}, maxVotes={maxVotes}, options.Count={options.Count}");
                     return false;
+                }
+
+                Console.WriteLine($"[INFO] Updating poll {pollId} fully");
 
                 poll.Question = question;
                 poll.StartDate = startDate;
@@ -194,17 +209,23 @@ namespace VotingSystem.DataAccess.Services
                 poll.Minvotes = minVotes;
                 poll.Maxvotes = maxVotes;
 
+                Console.WriteLine($"[DEBUG] Removing {poll.PollOptions.Count} existing options");
                 _context.PollOptions.RemoveRange(poll.PollOptions);
+
                 poll.PollOptions = options.Select(text => new PollOption
                 {
                     OptionText = text,
                     PollId = poll.Id
                 }).ToList();
+
+                Console.WriteLine($"[INFO] Added {poll.PollOptions.Count} new options");
             }
 
             await _context.SaveChangesAsync();
+            Console.WriteLine($"[SUCCESS] Poll {pollId} updated successfully");
             return true;
         }
+
 
 
     }

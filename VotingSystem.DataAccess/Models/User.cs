@@ -10,7 +10,6 @@ namespace VotingSystem.DataAccess
     PasswordHash - Jelszó hash
     Votes - Azok a szavazatok, amiket a felhasználó leadott
     RefreshToken - Új JWT token igénylésére használható token
-    RefreshTokenExpiryTime - A RefreshToken lejárati ideje
     */
     public class User : IdentityUser
     {

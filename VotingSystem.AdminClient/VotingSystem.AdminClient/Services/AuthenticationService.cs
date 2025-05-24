@@ -14,11 +14,11 @@ namespace VotingSystem.AdminClient.Services
         private readonly ILocalStorageService _localStorageService;
         private readonly IMapper _mapper;
         private readonly IHttpRequestUtility _httpRequestUtility;
-        private AuthState _authState;
+        private IAuthState _authState;
 
 
         public AuthenticationService(HttpClient httpClient, ILocalStorageService localStorageService,
-            IMapper mapper, IToastService toastService, IHttpRequestUtility httpRequestUtility, AuthState authState) : base(toastService)
+            IMapper mapper, IToastService toastService, IHttpRequestUtility httpRequestUtility, IAuthState authState) : base(toastService)
         {
             _httpClient = httpClient;
             _mapper = mapper;

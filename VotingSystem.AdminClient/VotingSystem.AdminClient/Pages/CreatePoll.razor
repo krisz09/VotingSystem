@@ -22,12 +22,12 @@
 
                         <div class="mb-3">
                             <label class="form-label">Start date</label>
-                            <input type="datetime-local" class="form-control" @bind="model.StartDate" />
+                            <input type="datetime-local" class="form-control" @bind="model.StartDateLocal" />
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">End date</label>
-                            <input type="datetime-local" class="form-control" @bind="model.EndDate" />
+                            <input type="datetime-local" class="form-control" @bind="model.EndDateLocal" />
                         </div>
 
                         <div class="mb-3">
@@ -123,14 +123,8 @@
             return;
         }
 
-
-        if (model.StartDate.HasValue)
-            model.StartDate = model.StartDate.Value.ToUniversalTime();
-
-        if (model.EndDate.HasValue)
-            model.EndDate = model.EndDate.Value.ToUniversalTime();
-
-        Console.WriteLine(model.maxVotes);
+        Console.WriteLine($"StartDate: {model.StartDate} ({model.StartDate?.Kind})");
+        Console.WriteLine($"EndDate: {model.EndDate} ({model.EndDate?.Kind})");
 
         try
         {

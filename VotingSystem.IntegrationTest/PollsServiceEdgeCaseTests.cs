@@ -149,7 +149,8 @@ namespace VotingSystem.IntegrationTest
                 PollOptions = new List<PollOption>
                 {
                     new PollOption { OptionText = "A" },
-                    new PollOption { OptionText = "B" }
+                    new PollOption { OptionText = "B" },
+                    new PollOption { OptionText = "C" }
                 }
             };
             db.Polls.Add(poll);
@@ -161,7 +162,7 @@ namespace VotingSystem.IntegrationTest
             // Too few votes
             var result1 = await service.SubmitVotesAsync(new List<int> { optionIds[0] }, "user1");
             // Too many votes
-            var result2 = await service.SubmitVotesAsync(new List<int> { optionIds[0], optionIds[1], 999 }, "user1");
+            var result2 = await service.SubmitVotesAsync(new List<int> { optionIds[0], optionIds[1], optionIds[2] }, "user1");
 
             result1.Should().BeFalse();
             result2.Should().BeFalse();

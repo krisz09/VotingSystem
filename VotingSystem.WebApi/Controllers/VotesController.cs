@@ -135,20 +135,22 @@ namespace VotingSystem.WebApi.Controllers
                 }
 
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                Console.WriteLine("User ID from token: " + userId);
                 if (string.IsNullOrEmpty(userId))
                     return Unauthorized();
 
                 var userExists = await _context.Users.AnyAsync(u => u.Id == userId);
-                Console.WriteLine("user in db:" + userExists);
 
                 if (!userExists)
                     return BadRequest("User not found in AspNetUsers table.");
 
-                if (dto.StartDate < DateTime.UtcNow || dto.EndDate < DateTime.UtcNow || (dto.EndDate - dto.StartDate).TotalMinutes < 15)
+                if (dto.StartDate < DateTime.Now || dto.EndDate < DateTime.Now || (dto.EndDate - dto.StartDate).TotalMinutes < 15)
                     return BadRequest("Invalid date range");
 
                 var poll = _mapper.Map<Poll>(dto);
+
+                poll.StartDate = DateTime.SpecifyKind(poll.StartDate, DateTimeKind.Local);
+                poll.EndDate = DateTime.SpecifyKind(poll.EndDate, DateTimeKind.Local);
+
                 poll.CreatedByUserId = userId;
 
                 Console.WriteLine("Poll mapped success");
